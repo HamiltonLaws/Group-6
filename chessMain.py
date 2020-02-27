@@ -43,8 +43,8 @@ def drawPieces():
                         + chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper()
                         + chessBoard.board[rows][cols].pieceOccupy.toString().upper()
                         + ".png")
-                    img = pygame.transform.scale(img,(75, 75))
-                    allPieces.append([img, [x_coord, y_coord]])
+                    img = pygame.transform.scale(img,(65, 65))
+                    allPieces.append([img, [x_coord+5, y_coord+5]])
                 x_coord += 75
             else:
                 square(x_coord, y_coord, width, height, black)
@@ -53,8 +53,8 @@ def drawPieces():
                         + chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper()
                         + chessBoard.board[rows][cols].pieceOccupy.toString().upper()
                         + ".png")
-                    img = pygame.transform.scale(img, (75, 75))
-                    allPieces.append([img, [x_coord, y_coord]])
+                    img = pygame.transform.scale(img, (65, 65))
+                    allPieces.append([img, [x_coord+5, y_coord+5]])
                 x_coord += 75
             color += 1
             number += 1
