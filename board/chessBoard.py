@@ -2,7 +2,7 @@ from pieces.nullPiece import nullPiece
 from pieces.pawn import Pawn
 from pieces.king import King
 from pieces.queen import Queen
-from pieces.rock import Rock
+from pieces.rook import Rook
 from pieces.bishop import Bishop
 from pieces.knight import Knight
 
@@ -35,11 +35,11 @@ class Board:
         self.board[7][3] = Tile(Queen("W", 7, 3))
 
         # create Rock
-        self.board[0][0] = Tile(Rock("B", 0, 0))
-        self.board[0][7] = Tile(Rock("B", 0, 7))
+        self.board[0][0] = Tile(Rook("B", 0, 0))
+        self.board[0][7] = Tile(Rook("B", 0, 7))
 
-        self.board[7][0] = Tile(Rock("W", 7, 0))
-        self.board[7][7] = Tile(Rock("W", 7, 7))
+        self.board[7][0] = Tile(Rook("W", 7, 0))
+        self.board[7][7] = Tile(Rook("W", 7, 7))
 
         # create Bishop
         self.board[0][2] = Tile(Bishop("B", 0, 2))

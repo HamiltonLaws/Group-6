@@ -1,6 +1,6 @@
 from pieces.nullPiece import nullPiece
 
-class Rock(nullPiece):
+class Rook(nullPiece):
     def __init__(self, alliance, x, y):
         self.alliance = alliance
         self.x_coord = x

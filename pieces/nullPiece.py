@@ -8,3 +8,6 @@ class nullPiece:
 
     def toString(self):
         return "0"
+
+    def validMove(self, board, x, y):
+        pass
