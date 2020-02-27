@@ -11,5 +11,8 @@ class sameAlliance(Rule):
 
     def checkAlliance(self):
         for i in self.piecesMoves:
-            x = i[0][0]
-            y = i[0][0] 
+            rows =i[0]
+            cols = i[1]
+            if self.board[rows][cols].pieceOccupy == "0":
+                self.piecesMoves.remove([rows, cols])
+            return self.piecesMoves
