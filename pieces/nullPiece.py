@@ -2,6 +2,8 @@ class nullPiece:
     alliance = None
     x_coord = None
     y_coord = None
+    board = None
+    piecesMoves = []
 
     def __init__(self):
         pass
