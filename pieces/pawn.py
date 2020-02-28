@@ -1,5 +1,5 @@
 from pieces.nullPiece import nullPiece
-from rule.basicRule import sameAlliance
+from rule.basicRule import checkPieces
 
 class Pawn(nullPiece):
     fMove = True
@@ -23,4 +23,4 @@ class Pawn(nullPiece):
             if self.fMove is True:
                 self.piecesMoves.append([self.x_coord+2, self.y_coord])
                 self.fMove = False
-        return sameAlliance(board, self.piecesMoves, self)
+        return checkPieces(board, self.piecesMoves, self)
