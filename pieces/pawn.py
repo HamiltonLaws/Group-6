@@ -23,4 +23,4 @@ class Pawn(nullPiece):
             if self.fMove is True:
                 self.piecesMoves.append([self.x_coord+2, self.y_coord])
             self.fMove = False
-        return sameAlliance(board, self.piecesMoves)
+        return sameAlliance(board, self.piecesMoves, self)
