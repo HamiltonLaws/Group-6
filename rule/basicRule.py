@@ -20,6 +20,14 @@ class sameAlliance(Rule):
                 if self.piece.toString() != "N" or self.piece.toString() != "K":
                     x = self.board[rows][cols].pieceOccupy.x_coord
                     y = self.board[rows][cols].pieceOccupy.y_coord
-
+                    for j in self.piecesMoves:
+                        if x < rows and j[0] < x:
+                            self.piecesMoves.remove([j[0], j[1]])
+                        elif x > rows and j[0] > x:
+                            self.piecesMoves.remove([j[0], j[1]])
+                        elif y < cols and j[1] < y:
+                            self.piecesMoves.remove([j[0], j[1]])
+                        elif y > cols and j[1] > y:
+                            self.piecesMoves.remove([j[0], j[1]])
 
         return self.piecesMoves
