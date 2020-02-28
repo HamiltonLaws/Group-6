@@ -17,10 +17,10 @@ class Pawn(nullPiece):
             self.piecesMoves.append([self.x_coord-1, self.y_coord])
             if self.fMove is True:
                 self.piecesMoves.append([self.x_coord-2, self.y_coord])
-            self.fMove = False
+                self.fMove = False
         else:
             self.piecesMoves.append([self.x_coord+1, self.y_coord])
             if self.fMove is True:
                 self.piecesMoves.append([self.x_coord+2, self.y_coord])
-            self.fMove = False
+                self.fMove = False
         return sameAlliance(board, self.piecesMoves, self)
