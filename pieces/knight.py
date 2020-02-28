@@ -8,3 +8,7 @@ class Knight(nullPiece):
 
     def toString(self):
         return "N"
+
+    def validMove(self, board):
+        
+        return self.piecesMoves

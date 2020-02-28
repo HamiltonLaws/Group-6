@@ -22,12 +22,12 @@ class checkPieces(Rule):
                     for j in self.piecesMoves:
                         x = self.board[j[0]][j[1]].pieceOccupy.x_coord
                         y = self.board[j[0]][j[1]].pieceOccupy.y_coord
-                        if y < cols and j[1] < y:
+                        if y < cols:
                             self.piecesMoves.remove([j[0], j[1]])
-                        elif y > cols and j[1] > y:
+                        elif y > cols:
                             self.piecesMoves.remove([j[0], j[1]])
-                        elif x < rows and j[0] < x:
+                        elif x < rows:
                             self.piecesMoves.remove([j[0], j[1]])
-                        elif x > rows and j[0] > x:
+                        elif x > rows:
                             self.piecesMoves.remove([j[0], j[1]])
         return self.piecesMoves
