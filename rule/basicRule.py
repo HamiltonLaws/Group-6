@@ -13,15 +13,13 @@ class checkPieces(Rule):
 
     def checkPieces(self):
         for i in self.piecesMoves:
-            rows = i[0]
-            cols = i[1]
-            if self.board[rows][cols].pieceOccupy.toString() != "0":
-                if self.board[rows][cols].pieceOccupy.alliance == self.piece.alliance:
+            if self.board[i[0]][i[1]].pieceOccupy.toString() != "0":
+                if self.board[i[0]][i[1]].pieceOccupy.alliance == self.piece.alliance:
                     self.piecesMoves.remove([rows, cols])
                 if self.piece.toString() != "N" or self.piece.toString() != "K":
                     for j in self.piecesMoves:
-                        if j[1] < cols or j[0] < rows:
+                        if j[1] < i[1] or j[0] < i[0]:
                             self.piecesMoves.remove([j[0], j[1]])
-                        elif j[1] > cols or j[0] > rows:
+                        elif j[1] > i[1] or j[0] > i[0]:
                             self.piecesMoves.remove([j[0], j[1]])
         return self.piecesMoves
