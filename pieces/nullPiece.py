@@ -1,9 +1,6 @@
-class nullPiece:
-    alliance = None
-    x_coord = None
-    y_coord = None
-    board = None
-    piecesMoves = []
+from pieces.piece import piece
+
+class nullPiece(piece):
 
     def __init__(self):
         pass
