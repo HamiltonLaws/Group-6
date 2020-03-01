@@ -15,4 +15,3 @@ class piece:
 
     def validMove(self, board):
         self.board = board
-        return []
