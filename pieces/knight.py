@@ -1,14 +1,12 @@
-from pieces.nullPiece import nullPiece
+from pieces.piece import piece
 
-class Knight(nullPiece):
+class Knight(piece):
     def __init__(self, alliance, x, y):
-        self.alliance = alliance
-        self.x_coord = x
-        self.y_coord = y
+        super().__init__(alliance, x, y)
 
     def toString(self):
         return "N"
 
     def validMove(self, board):
-        
-        return self.piecesMoves
+        super().validMove(board)
+        return []

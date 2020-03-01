@@ -1,10 +1,12 @@
-from pieces.nullPiece import nullPiece
+from pieces.piece import piece
 
-class Rook(nullPiece):
+class Rook(piece):
     def __init__(self, alliance, x, y):
-        self.alliance = alliance
-        self.x_coord = x
-        self.y_coord = y
+        super().__init__(alliance, x, y)
 
     def toString(self):
         return "R"
+
+    def validMove(self, board):
+        super().validMove(board)
+        return []

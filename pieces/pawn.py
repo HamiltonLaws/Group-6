@@ -4,14 +4,14 @@ from rule.basicRule import checkPieces
 class Pawn(piece):
     fMove = True
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, alliance, x, y):
+        super().__init__(alliance, x, y)
 
     def toString(self):
         return "P"
 
     def validMove(self, board):
-        self.board = board
+        super().validMove(board)
         if self.alliance == "W":
             self.piecesMoves.append([self.x_coord-1, self.y_coord])
             if self.fMove is True:
