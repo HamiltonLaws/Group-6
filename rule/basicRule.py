@@ -20,14 +20,8 @@ class checkPieces(Rule):
                     self.piecesMoves.remove([rows, cols])
                 if self.piece.toString() != "N" or self.piece.toString() != "K":
                     for j in self.piecesMoves:
-                        x = self.board[j[0]][j[1]].pieceOccupy.x_coord
-                        y = self.board[j[0]][j[1]].pieceOccupy.y_coord
-                        if y < cols:
+                        if j[1] < cols or j[0] < rows:
                             self.piecesMoves.remove([j[0], j[1]])
-                        elif y > cols:
-                            self.piecesMoves.remove([j[0], j[1]])
-                        elif x < rows:
-                            self.piecesMoves.remove([j[0], j[1]])
-                        elif x > rows:
+                        elif j[1] > cols or j[0] > rows:
                             self.piecesMoves.remove([j[0], j[1]])
         return self.piecesMoves
