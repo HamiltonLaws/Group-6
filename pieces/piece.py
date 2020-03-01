@@ -1,4 +1,4 @@
-class nullPiece:
+class piece:
     alliance = None
     x_coord = None
     y_coord = None
