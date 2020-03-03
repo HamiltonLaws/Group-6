@@ -4,6 +4,7 @@ class piece:
     y_coord = None
     board = None
     piecesMoves = []
+    fMove = True
 
     def __init__(self, alliance, x, y):
         self.alliance = alliance

@@ -64,3 +64,6 @@ class Board:
                 if count == 8:
                     print('|', end ='\n')
                     count = 0
+    
+    def updateBoard(self, x, y, piece):
+        self.board[x][y] = Tile(piece)
