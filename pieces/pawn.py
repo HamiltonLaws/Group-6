@@ -2,7 +2,7 @@ from pieces.piece import piece
 from rule.basicRule import checkPieces
 
 class Pawn(piece):
-    
+
     def __init__(self, alliance, x, y):
         super().__init__(alliance, x, y)
     
