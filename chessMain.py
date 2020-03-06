@@ -66,6 +66,10 @@ def drawBoard():
         y_coord += 75
 
 def drawPieces(flip):
+    global currentAlliance
+    global allPieces
+    global wPieces
+    global bPieces
     allPieces.clear()
     wPieces.clear()
     bPieces.clear()

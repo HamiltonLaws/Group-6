@@ -1,4 +1,5 @@
 from pieces.piece import piece
+from rule.basicRule import checkPieces
 
 class King(piece):
     def __init__(self, alliance, x, y):
@@ -9,4 +10,20 @@ class King(piece):
 
     def validMove(self, board):
         super().validMove(board)
-        return []
+        if self.x_coord < 7:
+            self.piecesMoves.append([self.x_coord+1, self.y_coord])
+            if 0 < self.y_coord < 7:
+                self.piecesMoves.append([self.x_coord+1, self.y_coord+1])
+                self.piecesMoves.append([self.x_coord+1, self.y_coord-1])
+        if self.x_coord > 0:
+            self.piecesMoves.append([self.x_coord-1, self.y_coord])
+            if 0 < self.y_coord < 7:
+                self.piecesMoves.append([self.x_coord-1, self.y_coord+1])
+                self.piecesMoves.append([self.x_coord-1, self.y_coord-1])
+        if 0 < self.y_coord < 7:
+            self.piecesMoves.append([self.x_coord, self.y_coord+1])
+            self.piecesMoves.append([self.x_coord, self.y_coord-1])
+
+        check = checkPieces(board, self.piecesMoves, self)
+        check.Check()
+        return check.moveList
