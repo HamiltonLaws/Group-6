@@ -1,5 +1,6 @@
 from pieces.piece import piece
 from rule.basicRule import checkPieces
+from rule.basicRule import enPassant
 
 class Pawn(piece):
 
@@ -27,6 +28,9 @@ class Pawn(piece):
                 self.piecesMoves.append([self.x_coord+1, self.y_coord+1])
             if self.y_coord-1 >= 0 and self.board[self.x_coord+1][self.y_coord-1].pieceOccupy.toString() != "0":
                 self.piecesMoves.append([self.x_coord+1, self.y_coord-1])
-        check = checkPieces(board, self.piecesMoves, self)
-        check.Check()
-        return check.moveList
+        validCheck = checkPieces(board, self.piecesMoves, self)
+        validCheck.Check()
+
+        enP = enPassant(board, validCheck.moveList, self)
+        enP.checkPawn()
+        return validCheck.moveList

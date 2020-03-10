@@ -23,6 +23,6 @@ class Rook(piece):
             if (move != 0):
                 self.piecesMoves.append([self.x_coord, self.y_coord+move])
 
-        check = checkPieces(board, self.piecesMoves, self)
-        check.Check()
-        return check.moveList
+        validCheck = checkPieces(board, self.piecesMoves, self)
+        validCheck.Check()
+        return validCheck.moveList

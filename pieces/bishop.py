@@ -1,7 +1,6 @@
 from pieces.piece import piece
 from rule.basicRule import checkPieces
 
-
 class Bishop(piece):
     def __init__(self, alliance, x, y):
         super().__init__(alliance, x, y)
@@ -11,7 +10,6 @@ class Bishop(piece):
 
     def validMove(self, board):
         super().validMove(board)
-
         for i in range(1, 8):
             if (-1 < self.x_coord - i < 8 and -1 < self.y_coord + i < 8):
                 self.piecesMoves.append([self.x_coord - i, self.y_coord + i])
@@ -22,7 +20,6 @@ class Bishop(piece):
             if (-1 < self.x_coord + i < 8 and -1 < self.y_coord - i < 8):
                 self.piecesMoves.append([self.x_coord + i, self.y_coord - i])
 
-        print(self.piecesMoves)
-        check = checkPieces(board, self.piecesMoves, self)
-        check.Check()
-        return check.moveList
+        validCheck = checkPieces(board, self.piecesMoves, self)
+        validCheck.Check()
+        return validCheck.moveList

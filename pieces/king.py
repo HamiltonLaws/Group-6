@@ -24,6 +24,6 @@ class King(piece):
             self.piecesMoves.append([self.x_coord, self.y_coord+1])
             self.piecesMoves.append([self.x_coord, self.y_coord-1])
 
-        check = checkPieces(board, self.piecesMoves, self)
-        check.Check()
-        return check.moveList
+        validCheck = checkPieces(board, self.piecesMoves, self)
+        validCheck.Check()
+        return validCheck.moveList
