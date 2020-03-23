@@ -2,6 +2,33 @@ from board.chessBoard import Board
 from pieces.nullPiece import nullPiece
 import pygame, os, sys, time
 
+class Option:
+    hovered = False
+
+    def __init__(self, text, pos):
+        self.text = text
+        self.pos = pos
+        self.set_rect()
+        self.draw()
+
+    def draw(self):
+        self.set_rend()
+        screen.blit(self.rend, self.rect)
+
+    def set_rend(self):
+        self.rend = menu_font.render(self.text, True, self.get_color())
+
+    def get_color(self):
+        if self.hovered:
+            return (255, 0, 0)
+        else:
+            return (100, 100, 100)
+
+    def set_rect(self):
+        self.set_rend()
+        self.rect = self.rend.get_rect()
+        self.rect.topleft = self.pos
+
 pygame.init()
 
 black, white = (222, 184, 135), (255, 255, 255)
@@ -35,6 +62,46 @@ flip = False
 x_origin = None
 y_origin = None
 passPawn = None
+### Promoting part ###
+menu_font = pygame.font.Font(None, 40)
+options = [Option("QUEEN", (140, 50)), Option("BISHOP", (140, 100)),
+           Option("ROOK", (140, 150)), Option("KNIGHT", (140, 200))]
+
+def promoteCheck():
+    black, white = (0, 0, 0), (255, 255, 255)
+    pygame.draw.rect(screen, black, [125, 35, 145, 210])
+    pygame.draw.rect(screen, white, [135, 45, 125, 190])
+    while True:
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # get UI coordinate
+                cols, rows = pygame.mouse.get_pos()
+                #print(cols, rows)
+                if 140 < cols <250:
+                    if 50 < rows < 80:
+                        return "Q"
+                    if 100 < rows < 130:
+                        return "B"
+                    if 150 < rows < 180:
+                        return "R"
+                    if 200 < rows < 230:
+                        return "N"
+        # gameDisplay.fill(white)
+
+        for option in options:
+            if option.rect.collidepoint(pygame.mouse.get_pos()):
+                option.hovered = True
+            else:
+                option.hovered = False
+            option.draw()
+            pygame.display.update()
+        #pygame.display.update()
+        clock.tick(15)
+### End Promoting part ###
 
 def switchSide():
     global flip
@@ -205,6 +272,18 @@ while not gO:
                         selectedPiece.fMove = False
                         chessBoard.updateBoard(bRows, bCols, selectedPiece)
                         chessBoard.updateBoard(x_origin, y_origin, nullPiece())
+                        # promoting check
+                        if selectedPiece.toString() == "P":
+                            if selectedPiece.alliance == "W" and selectedPiece.x_coord == 0:
+                                promoteTo = promoteCheck()
+                                chessBoard.updateBoard(selectedPiece.x_coord, selectedPiece.y_coord, nullPiece())
+                                chessBoard.promote(selectedPiece.x_coord, selectedPiece.y_coord, "W", promoteTo)
+
+                            if selectedPiece.alliance == "B" and selectedPiece.x_coord == 7:
+                                promoteTo = promoteCheck()
+                                chessBoard.updateBoard(selectedPiece.x_coord, selectedPiece.y_coord, nullPiece())
+                                chessBoard.promote(selectedPiece.x_coord, selectedPiece.y_coord, "B", promoteTo)
+
                         switchSide()
                             
                 

@@ -67,3 +67,13 @@ class Board:
     
     def updateBoard(self, x, y, piece):
         self.board[x][y] = Tile(piece)
+
+    def promote(self,x,y,alliance,piece):
+        if(piece == "Q"):
+            self.board[x][y] = Tile(Queen(alliance, x, y))
+        if (piece == "B"):
+            self.board[x][y] = Tile(Bishop(alliance, x, y))
+        if (piece == "R"):
+            self.board[x][y] = Tile(Rook(alliance, x, y))
+        if (piece == "N"):
+            self.board[x][y] = Tile(Knight(alliance, x, y))
