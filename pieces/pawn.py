@@ -4,6 +4,8 @@ from rule.basicRule import enPassant
 
 class Pawn(piece):
 
+    passP = False
+
     def __init__(self, alliance, x, y):
         super().__init__(alliance, x, y)
     
