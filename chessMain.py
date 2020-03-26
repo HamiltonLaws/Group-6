@@ -1,5 +1,6 @@
 from board.chessBoard import Board
 from pieces.nullPiece import nullPiece
+from rule.basicRule import Check
 import pygame, os, sys, time
 
 class Option:
@@ -48,6 +49,7 @@ clock = pygame.time.Clock()
 allTiles = []
 allPieces = []
 currentPieces = []
+checkConditon = None
 wPieces= []
 bPieces= []
 
@@ -109,6 +111,9 @@ def switchSide():
     global passPawn
     flip = not flip
     drawBoard()
+    #The check condition#
+    checkConditon = Check(chessBoard.board,currentAlliance).isCheck()#change#
+    print("Check condition:",checkConditon)#change#
     drawPieces(flip)
     if passPawn is not None:
         passPawn.passP = False
