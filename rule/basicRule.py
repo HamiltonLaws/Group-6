@@ -84,7 +84,6 @@ class Check(checked):
         #check the other king to see if your             
         for i in range(len(self.pieceMoves)):
             for j in range(len(self.pieceMoves[i])):
-                print(self.pieceMoves[i][j])
                 if(kingPlace == self.pieceMoves[i][j]):
                     self.message = "Is In Check"
 
