@@ -52,16 +52,28 @@ class checkPieces(Rule):
         self.moveList = [i for i in self.moveList if i not in self.removeList]
         
 class checked:
-    pieceMoves = []
+    playerPieceMoves = []
+    opponentPieceMoves= []
+    playerKingPlace = []
+    opponentKingPlace = []
+    playerKingMoves= []
+    opponentKingMoves = []
     board = None
     alliance= None
-    message = None
+    message = False
     def __init__(self, board, alliance):
         self.board = board
         self.alliance = alliance
+        
 
     def Clear(self):
-        self.pieceMoves.clear()
+        self.playerPieceMoves.clear()
+        self.opponentPieceMoves.clear()
+        self.playerKingPlace.clear()
+        self.opponentKingPlace.clear()
+        self.message = False
+        self.playerKingMoves.clear()
+        self.opponentKingMoves.clear()
 
 class Check(checked):
     def _init_(self,board,alliance):
@@ -69,26 +81,52 @@ class Check(checked):
     
     def isCheck(self):
         super().Clear()
-        kingPlace = []
         curent = None
         curentMove = None
+        kingMove = []
+        kingMove2 = []
         # pieceMoves retuns a list of all the posible moves from the current player, kingPlace returns the placment of the oppoite king
         for rows in range(8):
             for cols in range(8):
-                curent = self.board[rows][cols].pieceOccupy #need to acount for moving own pices could make check
+                curent = self.board[rows][cols].pieceOccupy
                 if(curent.toString() != "0" and curent.toString() != "K" and curent.alliance == self.alliance):
                     curentMove = curent.validMove(self.board)
-                    self.pieceMoves.append(curentMove)
+                    self.playerPieceMoves.append(curentMove)
+                elif(curent.toString() != "0" and curent.toString() != "K" and curent.alliance != self.alliance):
+                    curentMove = curent.validMove(self.board)
+                    self.opponentPieceMoves.append(curentMove)
                 elif(curent.toString() == "K" and curent.alliance != self.alliance):
-                    kingPlace = [curent.x_coord,curent.y_coord]
-        #check the other king to see if your             
-        for i in range(len(self.pieceMoves)):
-            for j in range(len(self.pieceMoves[i])):
-                if(kingPlace == self.pieceMoves[i][j]):
-                    self.message = "Is In Check"
-
-            #maby make the check condition a boolian
-        return self.message       
+                    self.opponentKingMoves = curent.validMove(self.board)
+                    self.opponentKingPlace = [curent.x_coord,curent.y_coord]
+                elif(curent.toString() == "K" and curent.alliance == self.alliance):
+                    self.playerKingMoves = curent.validMove(self.board)
+                    self.playerKingPlace = [curent.x_coord,curent.y_coord]
+        #check the other king is in check            
+        for i in range(len(self.playerPieceMoves)):
+            for j in range(len(self.playerPieceMoves[i])):
+                if(self.opponentKingPlace == self.playerPieceMoves[i][j]):
+                    self.message = True
+        if(self.message == False):
+            return [10,10]
+        
+        
+        #checks for checkMate  
+        kingMove =  self.opponentKingMoves        
+        if(self.message == True):
+            for i in range(len(self.playerPieceMoves)):
+                for j in range(len(self.playerPieceMoves[i])):
+                    for k in range(len(kingMove)):
+                        if(kingMove[k]== self.playerPieceMoves[i][j]):
+                            kingMove2.append(kingMove[k])
+            #check to see if anoter piece can protect the king
+            if(kingMove2 == kingMove):
+                kingMove = []
+            for i in range(len(self.opponentPieceMoves)):
+                for j in range(len(self.opponentPieceMoves[i])):
+                    for k in range(len(kingMove2)):
+                        if(kingMove2[k] == self.opponentPieceMoves[i][j]):
+                            kingMove.append(kingMove2[k]) 
+        return kingMove   
 
 
 class enPassant(Rule):
