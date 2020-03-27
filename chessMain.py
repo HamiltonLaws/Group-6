@@ -49,7 +49,7 @@ clock = pygame.time.Clock()
 allTiles = []
 allPieces = []
 currentPieces = []
-checkConditon = None
+kingMove = []
 wPieces= []
 bPieces= []
 
@@ -112,8 +112,14 @@ def switchSide():
     flip = not flip
     drawBoard()
     #The check condition#
-    checkConditon = Check(chessBoard.board,currentAlliance).isCheck()#change#
-    print("Check condition:",checkConditon)#change#
+    kingMove = Check(chessBoard.board,currentAlliance).isCheck()#change#
+    drawPieces(flip)
+    if(kingMove == []):
+        print(currentAlliance, " is in CheckMate")
+        #implement end game here
+    #let the player know they are in check
+    elif(kingMove != [10,10] and kingMove != []):
+        print(currentAlliance, " in in check")
     drawPieces(flip)
     if passPawn is not None:
         passPawn.passP = False
