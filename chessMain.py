@@ -50,6 +50,7 @@ allTiles = []
 allPieces = []
 currentPieces = []
 kingMove = []
+checked = False
 wPieces= []
 bPieces= []
 
@@ -112,13 +113,10 @@ def switchSide():
     flip = not flip
     drawBoard()
     #The check condition#
-    kingMove = Check(chessBoard.board,currentAlliance).isCheck()#change#
+    checked = Check(chessBoard.board,currentAlliance).isCheck()
     drawPieces(flip)
-    if(kingMove == []):
-        print(currentAlliance, " is in CheckMate")
-        #implement end game here
     #let the player know they are in check
-    elif(kingMove != [10,10] and kingMove != []):
+    if(checked == True):
         print(currentAlliance, " in in check")
     drawPieces(flip)
     if passPawn is not None:
