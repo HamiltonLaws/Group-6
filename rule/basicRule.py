@@ -78,7 +78,8 @@ class checked:
 class Check(checked):
     def _init_(self,board,alliance):
         super().__init__(board,alliance)
-    
+
+    #Returns a Boolean if opponent will be in Chekc DONE
     def isCheck(self):
         super().Clear()
         curent = None
@@ -86,7 +87,7 @@ class Check(checked):
         # pieceMoves retuns a list of all the posible moves from the current player, kingPlace returns the placment of the oppoite king
         for rows in range(8):
             for cols in range(8):
-                curent = self.board[rows][cols].pieceOccupy
+                curent = self.board[rows][cols].pieceOccupy #add validMove here
                 if(curent.toString() != "0" and curent.toString() != "K" and curent.alliance == self.alliance):
                     curentMove = curent.validMove(self.board)
                     self.playerPieceMoves.append(curentMove)
@@ -101,12 +102,68 @@ class Check(checked):
                     curentMove = curent.validMove(self.board)
                     self.playerKingMoves.append(curentMove)
                     self.playerKingPlace = [curent.x_coord,curent.y_coord]
-        #check the other king is in check           
+        #check the other king is in check  
+        print("King Move Return", self.opponentKingMoves)          
         for i in range(len(self.playerPieceMoves)):
             for j in range(len(self.playerPieceMoves[i])):
                 if(self.opponentKingPlace == self.playerPieceMoves[i][j]):
                     self.message = True
-        return self.message  
+        return self.message
+        
+    #Checks to see if King can move where they will not be in Check DONE
+    def isCheckMate(self):
+        kingMove =  self.opponentKingMoves  
+        kingMoveRemove = []
+        kingMoveReturn = self.opponentKingMoves
+        print("King Move Return", kingMoveReturn) 
+        print("Player piece move", self.playerPieceMoves)    
+        for i in range(len(self.playerPieceMoves)):
+            for j in range(len(self.playerPieceMoves[i])):
+                for k in range(len(kingMove)):
+                    for x in range(len(kingMove[k])):
+                        if(kingMove[k][x]== self.playerPieceMoves[i][j]):
+                            kingMoveRemove.append([kingMove[k][x]])
+        #Checks to see if king can move to aother spot and not be in check
+        print("King move remove", kingMoveRemove)
+        if(kingMove == kingMoveRemove):
+            kingMoveReturn = []
+        else:
+            for i in range(len(kingMove)):   
+                for j in range(len(kingMoveRemove)):
+                    for k in range(len(kingMoveRemove)):
+                        for x in range(len(kingMoveRemove[k])):
+                            if(kingMove[i][j] == kingMoveRemove[k][x]):
+                                kingMoveReturn[i].remove(kingMove[i][j])
+                                #kingMoveRemove.append(kingMove[i][j])
+        print("King Move Return", kingMoveReturn)
+        return kingMoveReturn
+
+    #to see if you can move a piece to protect king from check INPROGRESS
+    def toProtect(self):
+        kingMove = []
+        kingMove =  self.opponentKingMoves  
+        kingMoveRemove = []
+        print("The king can innicaly move here: ",self.opponentKingMoves)     
+        if(self.message == True):
+            for i in range(len(self.playerPieceMoves)):
+                for j in range(len(self.playerPieceMoves[i])):
+                    for k in range(len(kingMove)):
+                        if(kingMove[k]== self.playerPieceMoves[i][j]):
+                            kingMoveRemove.append(kingMove[k])
+            #check to see if anoter piece can protect the king
+            print("King Remove List ", kingMoveRemove)
+            for i in range(len(self.opponentPieceMoves)):
+                for j in range(len(self.opponentPieceMoves[i])):
+                    for k in range(len(kingMoveRemove)):
+                        if(kingMoveRemove[k] == self.opponentPieceMoves[i][j]):
+                            print("this is king move",kingMove[k], "this is opponent move ", self.opponentPieceMoves[i][j])
+                            kingMove.remove(kingMoveRemove[k]) 
+        return kingMove
+
+    #To see if your a piece is protecting you from check IPROGRESS
+    def isProtecting(self):
+        return True
+
 
 
 class enPassant(Rule):
@@ -142,3 +199,4 @@ class enPassant(Rule):
             if y < 7 and pieceRight.toString() == "P" and pieceRight.alliance != alliance:
                 if pieceRight.passP is True and attRight.toString() == "0":
                     append([dict[alliance] + incre[alliance], y+1])
+
