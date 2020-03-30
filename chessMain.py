@@ -110,14 +110,22 @@ def switchSide():
     global flip
     global selectedPiece
     global passPawn
+    global kingMove
+    global checked
     flip = not flip
     drawBoard()
     #The check condition#
-    checked = Check(chessBoard.board,currentAlliance).isCheck()
+    checked = Check(chessBoard.board,currentAlliance).isCheck()#change#
+    if(checked == True):
+        kingMove.clear()
+        kingMove.extend(Check(chessBoard.board,currentAlliance).isCheckMate())
+        print("king move main",kingMove)
     drawPieces(flip)
     #let the player know they are in check
     if(checked == True):
+        #make a UI popup
         print(currentAlliance, " in in check")
+
     drawPieces(flip)
     if passPawn is not None:
         passPawn.passP = False
@@ -244,7 +252,14 @@ while not gO:
                         x_origin = bRows
                         y_origin = bCols
                         print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
-                        pieceMove = selectedPiece.validMove(chessBoard.board)
+                        #update king moves if in check HAMILTON
+                        #Make it so has to move king
+                        #if clicked off king pieceMove is null?
+                        if(selectedPiece.toString() == "K" and checked == True):
+                            pieceMove = kingMove[0]
+                            
+                        else:
+                            pieceMove = selectedPiece.validMove(chessBoard.board)
                         print("validMoves:", pieceMove)
                         drawBoard()
                         drawPieces(flip)
@@ -306,3 +321,4 @@ while not gO:
     
     pygame.display.update()
     clock.tick(60)
+
