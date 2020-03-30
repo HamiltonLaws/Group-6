@@ -254,7 +254,7 @@ while not gO:
                         #Make it so has to move king
                         #if clicked off king pieceMove is null?
                         if(selectedPiece.toString() == "K" and checked == True):
-                            pieceMove = check.isCheck()
+                            check.isCheck()
                             pieceMove = check.isCheckMate()
                         else:
                             pieceMove = selectedPiece.validMove(chessBoard.board)
