@@ -87,54 +87,42 @@ class Check(checked):
         # pieceMoves retuns a list of all the posible moves from the current player, kingPlace returns the placment of the oppoite king
         for rows in range(8):
             for cols in range(8):
-                curent = self.board[rows][cols].pieceOccupy #add validMove here
+                curent = self.board[rows][cols].pieceOccupy
+                curentMove = curent.validMove(self.board)
                 if(curent.toString() != "0" and curent.toString() != "K" and curent.alliance == self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.playerPieceMoves.append(curentMove)
+                    self.playerPieceMoves.extend(curentMove)
                 elif(curent.toString() != "0" and curent.toString() != "K" and curent.alliance != self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.opponentPieceMoves.append(curentMove)
+                    self.opponentPieceMoves.extend(curentMove)
                 elif(curent.toString() == "K" and curent.alliance != self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.opponentKingMoves.append(curentMove)
+                    self.opponentKingMoves.extend(curentMove)
                     self.opponentKingPlace = [curent.x_coord,curent.y_coord]
                 elif(curent.toString() == "K" and curent.alliance == self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.playerKingMoves.append(curentMove)
+                    self.playerKingMoves.extend(curentMove)
                     self.playerKingPlace = [curent.x_coord,curent.y_coord]
         #check the other king is in check  
         print("King Move Return", self.opponentKingMoves)          
-        for i in range(len(self.playerPieceMoves)):
-            for j in range(len(self.playerPieceMoves[i])):
-                if(self.opponentKingPlace == self.playerPieceMoves[i][j]):
-                    self.message = True
+        if self.opponentKingPlace in self.playerPieceMoves:
+            self.message = True
         return self.message
         
     #Checks to see if King can move where they will not be in Check DONE
     def isCheckMate(self):
-        kingMove =  self.opponentKingMoves  
         kingMoveRemove = []
-        kingMoveReturn = self.opponentKingMoves
-        print("King Move Return", kingMoveReturn) 
+        kingMoveReturn = self.opponentKingMoves 
         print("Player piece move", self.playerPieceMoves)    
-        for i in range(len(self.playerPieceMoves)):
-            for j in range(len(self.playerPieceMoves[i])):
-                for k in range(len(kingMove)):
-                    for x in range(len(kingMove[k])):
-                        if(kingMove[k][x]== self.playerPieceMoves[i][j]):
-                            kingMoveRemove.append([kingMove[k][x]])
+        for i in range(len(kingMoveReturn)):
+            if kingMoveReturn[i] in self.playerPieceMoves:
+                kingMoveRemove.extend([kingMoveReturn[i]])
         #Checks to see if king can move to aother spot and not be in check
-        print("King move remove", kingMoveRemove)
-        if(kingMove == kingMoveRemove):
+        if len(kingMoveReturn) == len(kingMoveRemove):
             kingMoveReturn = []
         else:
-            for i in range(len(kingMove)):   
-                for j in range(len(kingMoveRemove)):
-                    for k in range(len(kingMoveRemove)):
-                        for x in range(len(kingMoveRemove[k])):
-                            if(kingMove[i][j] == kingMoveRemove[k][x]):
-                                kingMoveReturn[i].remove(kingMove[i][j])
-                                #kingMoveRemove.append(kingMove[i][j])
+            for i in range(len(kingMoveReturn)):   
+                if kingMoveReturn[i] in kingMoveRemove:
+                    kingMoveRemove.append([kingMoveReturn[i]])
+        print("King Move Return", kingMoveReturn)
+        print("King move remove", kingMoveRemove)
+        kingMoveReturn = [i for i in kingMoveReturn if i not in kingMoveRemove]
         print("King Move Return", kingMoveReturn)
         return kingMoveReturn
 
