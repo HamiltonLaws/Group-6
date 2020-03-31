@@ -50,6 +50,7 @@ allTiles = []
 allPieces = []
 currentPieces = []
 kingMove = []
+check = None
 checked = False
 wPieces= []
 bPieces= []
@@ -110,14 +111,19 @@ def switchSide():
     global flip
     global selectedPiece
     global passPawn
+    global check
+    global checked
     flip = not flip
     drawBoard()
     #The check condition#
-    checked = Check(chessBoard.board,currentAlliance).isCheck()
+    check = Check(chessBoard.board,currentAlliance)
+    checked = check.isCheck()#change#
     drawPieces(flip)
     #let the player know they are in check
     if(checked == True):
+        #make a UI popup
         print(currentAlliance, " in in check")
+
     drawPieces(flip)
     if passPawn is not None:
         passPawn.passP = False
@@ -244,7 +250,14 @@ while not gO:
                         x_origin = bRows
                         y_origin = bCols
                         print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
-                        pieceMove = selectedPiece.validMove(chessBoard.board)
+                        #update king moves if in check HAMILTON
+                        #Make it so has to move king
+                        #if clicked off king pieceMove is null?
+                        if(selectedPiece.toString() == "K" and checked == True):
+                            check.isCheck()
+                            pieceMove = check.isCheckMate()
+                        else:
+                            pieceMove = selectedPiece.validMove(chessBoard.board)
                         print("validMoves:", pieceMove)
                         drawBoard()
                         drawPieces(flip)
