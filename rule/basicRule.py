@@ -78,7 +78,8 @@ class checked:
 class Check(checked):
     def _init_(self,board,alliance):
         super().__init__(board,alliance)
-    
+
+    #Returns a Boolean if opponent will be in Chekc DONE
     def isCheck(self):
         super().Clear()
         curent = None
@@ -87,26 +88,70 @@ class Check(checked):
         for rows in range(8):
             for cols in range(8):
                 curent = self.board[rows][cols].pieceOccupy
+                curentMove = curent.validMove(self.board)
                 if(curent.toString() != "0" and curent.toString() != "K" and curent.alliance == self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.playerPieceMoves.append(curentMove)
+                    self.playerPieceMoves.extend(curentMove)
                 elif(curent.toString() != "0" and curent.toString() != "K" and curent.alliance != self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.opponentPieceMoves.append(curentMove)
+                    self.opponentPieceMoves.extend(curentMove)
                 elif(curent.toString() == "K" and curent.alliance != self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.opponentKingMoves.append(curentMove)
+                    self.opponentKingMoves.extend(curentMove)
                     self.opponentKingPlace = [curent.x_coord,curent.y_coord]
                 elif(curent.toString() == "K" and curent.alliance == self.alliance):
-                    curentMove = curent.validMove(self.board)
-                    self.playerKingMoves.append(curentMove)
+                    self.playerKingMoves.extend(curentMove)
                     self.playerKingPlace = [curent.x_coord,curent.y_coord]
-        #check the other king is in check           
-        for i in range(len(self.playerPieceMoves)):
-            for j in range(len(self.playerPieceMoves[i])):
-                if(self.opponentKingPlace == self.playerPieceMoves[i][j]):
-                    self.message = True
-        return self.message  
+        #check the other king is in check  
+        print("King Move Return", self.opponentKingMoves)          
+        if self.opponentKingPlace in self.playerPieceMoves:
+            self.message = True
+        return self.message
+        
+    #Checks to see if King can move where they will not be in Check DONE
+    def isCheckMate(self):
+        kingMoveRemove = []
+        kingMoveReturn = self.opponentKingMoves 
+        print("Player piece move", self.playerPieceMoves)    
+        for i in range(len(kingMoveReturn)):
+            if kingMoveReturn[i] in self.playerPieceMoves:
+                kingMoveRemove.extend([kingMoveReturn[i]])
+        #Checks to see if king can move to aother spot and not be in check
+        if len(kingMoveReturn) == len(kingMoveRemove):
+            kingMoveReturn = []
+        else:
+            for i in range(len(kingMoveReturn)):   
+                if kingMoveReturn[i] in kingMoveRemove:
+                    kingMoveRemove.append([kingMoveReturn[i]])
+        print("King Move Return", kingMoveReturn)
+        print("King move remove", kingMoveRemove)
+        kingMoveReturn = [i for i in kingMoveReturn if i not in kingMoveRemove]
+        print("King Move Return", kingMoveReturn)
+        return kingMoveReturn
+
+    #to see if you can move a piece to protect king from check INPROGRESS
+    def toProtect(self):
+        kingMove = []
+        kingMove =  self.opponentKingMoves  
+        kingMoveRemove = []
+        print("The king can innicaly move here: ",self.opponentKingMoves)     
+        if(self.message == True):
+            for i in range(len(self.playerPieceMoves)):
+                for j in range(len(self.playerPieceMoves[i])):
+                    for k in range(len(kingMove)):
+                        if(kingMove[k]== self.playerPieceMoves[i][j]):
+                            kingMoveRemove.append(kingMove[k])
+            #check to see if anoter piece can protect the king
+            print("King Remove List ", kingMoveRemove)
+            for i in range(len(self.opponentPieceMoves)):
+                for j in range(len(self.opponentPieceMoves[i])):
+                    for k in range(len(kingMoveRemove)):
+                        if(kingMoveRemove[k] == self.opponentPieceMoves[i][j]):
+                            print("this is king move",kingMove[k], "this is opponent move ", self.opponentPieceMoves[i][j])
+                            kingMove.remove(kingMoveRemove[k]) 
+        return kingMove
+
+    #To see if your a piece is protecting you from check IPROGRESS
+    def isProtecting(self):
+        return True
+
 
 
 class enPassant(Rule):
