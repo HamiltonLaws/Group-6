@@ -1,3 +1,4 @@
+import pygame
 class Rule:
     board = None
     piecesMoves = []
@@ -151,7 +152,73 @@ class Check(checked):
     #To see if your a piece is protecting you from check IPROGRESS
     def isProtecting(self):
         return True
+### Promoting part ###
+    def promoteCheck(self,screen,clock):
+        options = [Option("QUEEN", (140, 50 - 7), screen), Option("BISHOP", (140, 100 - 7), screen),
+                   Option("ROOK", (140, 150 - 7), screen), Option("KNIGHT", (140, 200 - 7), screen)]
+        black, white = (0, 0, 0), (255, 255, 255)
+        pygame.draw.rect(screen, black, [130, 40, 135, 200])
+        #pygame.draw.rect(screen, white, [135, 45, 125, 190])
+        pygame.draw.rect(screen, white, [135, 45, 125, 42])
+        pygame.draw.rect(screen, white, [135, 95, 125, 42])
+        pygame.draw.rect(screen, white, [135, 145, 125, 42])
+        pygame.draw.rect(screen, white, [135, 195, 125, 40])
+        while True:
+            for event in pygame.event.get():
 
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # get UI coordinate
+                    cols, rows = pygame.mouse.get_pos()
+                    # print(cols, rows)
+                    if 140 < cols < 250:
+                        if 50 < rows < 80:
+                            return "Q"
+                        if 100 < rows < 130:
+                            return "B"
+                        if 150 < rows < 180:
+                            return "R"
+                        if 200 < rows < 230:
+                            return "N"
+
+            for option in options:
+                if option.rect.collidepoint(pygame.mouse.get_pos()):
+                    option.hovered = True
+                else:
+                    option.hovered = False
+                option.draw(screen)
+                pygame.display.update()
+            clock.tick(15)
+
+class Option:
+    hovered = False
+    def __init__(self, text, pos,screen):
+        self.text = text
+        self.pos = pos
+        self.set_rect()
+        self.draw(screen)
+
+    def draw(self,screen):
+        self.set_rend()
+        screen.blit(self.rend, self.rect)
+
+    def set_rend(self):
+        menu_font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 30)
+        self.rend = menu_font.render(self.text, True, self.get_color())
+
+    def get_color(self):
+        if self.hovered:
+            return (255, 0, 0)
+        else:
+            return (0, 0, 0)
+
+    def set_rect(self):
+        self.set_rend()
+        self.rect = self.rend.get_rect()
+        self.rect.topleft = self.pos
+### End Promoting part ###
 
 
 class enPassant(Rule):
