@@ -27,6 +27,7 @@ check = None
 checked = False
 wPieces= []
 bPieces= []
+protector = None
 
 pieceMove = []
 currentAlliance = "W"
@@ -123,6 +124,11 @@ def switchSide():
     global checked
     global currentAlliance
     global mode
+     #The check condition#
+    check = Check(chessBoard.board,currentAlliance)
+    checked = check.isCheck()#change#
+    drawPieces(flip)
+
     if currentAlliance == "W":
         currentAlliance = "B"
     else:
@@ -130,10 +136,7 @@ def switchSide():
     if mode == "P2F":
         flip = not flip
     drawBoard()
-    #The check condition#
-    check = Check(chessBoard.board,currentAlliance)
-    checked = check.isCheck()#change#
-    drawPieces(flip)
+
     #let the player know they are in check
     if(checked == True):
         #make a UI popup
@@ -248,12 +251,24 @@ while not gO:
                         x_origin = bRows
                         y_origin = bCols
                         print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
-                        #update king moves if in check HAMILTON
-                        #Make it so has to move king
-                        #if clicked off king pieceMove is null?
-                        if(selectedPiece.toString() == "K" and checked == True):
-                            check.isCheck()
-                            pieceMove = check.isCheckMate()
+                        #Checks for conditons need to an UI
+                        if(checked == True):
+                            protector = check.toProtect()
+                            if(protector == True):
+                                print("Must move a pice to protect the king or move the king to another positon")
+                                if(selectedPiece.toString()=='K'):
+                                    pieceMove = check.isCheckMate()
+                                else:
+                                    pieceMove = selectedPiece.validMove(chessBoard.board) 
+                            else:
+                                print("King must be moved")
+                                if(selectedPiece.toString() != 'K'):
+                                    pieceMove = []
+                                else:
+                                    pieceMove = check.isCheckMate()
+                                    if(pieceMove == []):
+                                        print(currentAlliance, " Is in checkMate")
+                            
                         else:
                             pieceMove = selectedPiece.validMove(chessBoard.board)
                         print("validMoves:", pieceMove)
