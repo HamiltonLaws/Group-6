@@ -48,9 +48,6 @@ x_origin = None
 y_origin = None
 passPawn = None
 
-title = TitlePage("ChessA")
-mode = title.ModeSelect(screen,clock)
-
 def square(x_coord, y_coord, width, height, color):
     pygame.draw.rect(screen, color, [x_coord, y_coord, width, height])
     allTiles.append([color, [x_coord, y_coord, width, height]])
@@ -195,8 +192,6 @@ def startGame(mode):
         currentPieces = wPieces
         stalemate = staleMate(chessBoard.board, wPieces, bPieces, Pieces)
 
-gO = False
-startGame(mode)
 def main():
     global gO
     global currentAlliance
@@ -208,6 +203,7 @@ def main():
     global selectedPiece
     global pieceMove
     global count
+    global moves
     
     while not gO:
 
@@ -328,16 +324,17 @@ def main():
             clock.tick(60)
 
 while 1:
-    main()
-    gO = False
     flip = False
     passPawn = None
     check = None
     selectedPiece = None
     count = 0
+    moves = {"W": 0, "B": 0}
     chessBoard = Board()
     chessBoard.createBoard()
     currentAlliance = "W"
     title = TitlePage("ChessA")
     mode = title.ModeSelect(screen,clock)
     startGame(mode)
+    gO = False
+    main()
