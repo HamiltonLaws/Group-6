@@ -12,8 +12,6 @@ black, white = (222, 184, 135), (255, 255, 255)
 
 ui_width, ui_height = 600, 600
 
-selectedPiece = None
-
 screen = pygame.display.set_mode((ui_width, ui_height))
 screen = pygame.display.get_surface()
 
@@ -27,6 +25,7 @@ currentPieces = []
 Pieces = []
 kingMove = []
 check = None
+selectedPiece = None
 checked = False
 staleCheck = False
 moves = {"W": 0, "B": 0}
@@ -166,6 +165,10 @@ def switchSide():
 
     drawBoard()
     drawPieces(flip)
+    stalemate.alliance = currentAlliance
+    if stalemate.staleCase2():
+        print("No where to go stale")
+        gO = True
     if selectedPiece.toString() == "P" and selectedPiece.passP is True:
         passPawn = selectedPiece
     if count == 4:
@@ -194,121 +197,147 @@ def startGame(mode):
 
 gO = False
 startGame(mode)
+def main():
+    global gO
+    global currentAlliance
+    global currentPieces
+    global wPieces
+    global bPieces
+    global checked
+    global mode
+    global selectedPiece
+    global pieceMove
+    global count
+    
+    while not gO:
 
-while not gO:
-
-    if currentAlliance == "W":
-        currentPieces = wPieces
-    else:
-        currentPieces = bPieces
-    if mode == "DB" and currentAlliance != playerAlliance:
-        selectedPiece, move = dumbBot(chessBoard, currentPieces).randomMoves()
-        if move != 0:
-            moves[currentAlliance] += move
+        if currentAlliance == "W":
+            currentPieces = wPieces
         else:
-            moves[currentAlliance] = 0
-        print(moves)
-        switchSide()
-        continue
+            currentPieces = bPieces
+        if mode == "DB" and currentAlliance != playerAlliance:
+            selectedPiece, move = dumbBot(chessBoard, currentPieces).randomMoves()
+            if move != 0:
+                moves[currentAlliance] += move
+            else:
+                moves[currentAlliance] = 0
+            print(moves)
+            switchSide()
+            continue
 
-    for event in pygame.event.get():
-        #print(event)
-        if event.type == pygame.QUIT:
-            gO = True
-            pygame.quit()
-            quit()
+        for event in pygame.event.get():
+            #print(event)
+            if event.type == pygame.QUIT:
+                gO = True
+                pygame.quit()
+                quit()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            #get UI coordinate
-            cols, rows = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                #get UI coordinate
+                cols, rows = pygame.mouse.get_pos()
 
-            for i in currentPieces:
-                if i[0] < rows < i[0]+75 and i[1] < cols < i[1]+75:
-                    bRows = (int)(i[0]/75)
-                    bCols = (int)(i[1]/75)
-                    if currentAlliance == "B" and mode == "P2F":
-                        bRows = (int)((525-i[0])/75)
-                        bCols = (int)((525-i[1])/75)
-                    if chessBoard.board[bRows][bCols].pieceOccupy.alliance == currentAlliance:
-                        #print(bRows, bCols)
-                        pieceMove.clear()
-                        selectedPiece = chessBoard.board[bRows][bCols].pieceOccupy
-                        x_origin = bRows
-                        y_origin = bCols
-                        print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
-                        #Checks for conditons need to an UI
-                        if(checked == True):
-                            protector = check.toProtect()
-                            if(protector == True):
-                                print("Must move a pice to protect the king or move the king to another positon")
-                                if(selectedPiece.toString()=='K'):
-                                    pieceMove = check.isCheckMate()
+                for i in currentPieces:
+                    if i[0] < rows < i[0]+75 and i[1] < cols < i[1]+75:
+                        bRows = (int)(i[0]/75)
+                        bCols = (int)(i[1]/75)
+                        if currentAlliance == "B" and mode == "P2F":
+                            bRows = (int)((525-i[0])/75)
+                            bCols = (int)((525-i[1])/75)
+                        if chessBoard.board[bRows][bCols].pieceOccupy.alliance == currentAlliance:
+                            #print(bRows, bCols)
+                            pieceMove.clear()
+                            selectedPiece = chessBoard.board[bRows][bCols].pieceOccupy
+                            x_origin = bRows
+                            y_origin = bCols
+                            print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
+                            #Checks for conditons need to an UI
+                            if(checked == True):
+                                protector = check.toProtect()
+                                if(protector == True):
+                                    print("Must move a pice to protect the king or move the king to another positon")
+                                    if(selectedPiece.toString()=='K'):
+                                        pieceMove = check.isCheckMate()
+                                    else:
+                                        pieceMove = selectedPiece.validMove(chessBoard.board) 
                                 else:
-                                    pieceMove = selectedPiece.validMove(chessBoard.board) 
+                                    print("King must be moved")
+                                    if(selectedPiece.toString() != 'K'):
+                                        pieceMove = []
+                                    else:
+                                        pieceMove = check.isCheckMate()
+                                        if(pieceMove == []):
+                                            print(currentAlliance, " Is in checkMate") 
                             else:
-                                print("King must be moved")
-                                if(selectedPiece.toString() != 'K'):
-                                    pieceMove = []
-                                else:
-                                    pieceMove = check.isCheckMate()
-                                    if(pieceMove == []):
-                                        print(currentAlliance, " Is in checkMate") 
-                        else:
-                            pieceMove = selectedPiece.validMove(chessBoard.board)
-                        print("validMoves:", pieceMove)
-                        drawBoard()
-                        drawPieces(flip)
-                        for j in pieceMove:
-                            j[0] = j[0]*75
-                            j[1] = j[1]*75
-                            if currentAlliance == "B" and mode == "P2F":
-                                j[0] = 525 - j[0]
-                                j[1] = 525 - j[1]
-                            img = pygame.image.load("./art/green_circle_neg.png")
-                            img = pygame.transform.scale(img, (75, 75))
-                            screen.blit(img, (j[1], j[0]))
-                            currentPieces.extend([[j[0], j[1]]])
-                        #print(currentPieces)
-                        break
-                    elif selectedPiece != None:
-                        if chessBoard.board[bRows][bCols].pieceOccupy.toString() != "0":
-                            moves[currentAlliance] = 0
-                        else:
-                            moves[currentAlliance] += 1
-                        if selectedPiece.toString() == "P":
-                            moves[currentAlliance] = 0
-                            if selectedPiece.x_coord +2 == bRows or selectedPiece.x_coord -2 == bRows:
-                                selectedPiece.passP = True
+                                pieceMove = selectedPiece.validMove(chessBoard.board)
+                            print("validMoves:", pieceMove)
+                            drawBoard()
+                            drawPieces(flip)
+                            for j in pieceMove:
+                                j[0] = j[0]*75
+                                j[1] = j[1]*75
+                                if currentAlliance == "B" and mode == "P2F":
+                                    j[0] = 525 - j[0]
+                                    j[1] = 525 - j[1]
+                                img = pygame.image.load("./art/green_circle_neg.png")
+                                img = pygame.transform.scale(img, (75, 75))
+                                screen.blit(img, (j[1], j[0]))
+                                currentPieces.extend([[j[0], j[1]]])
+                            #print(currentPieces)
+                            break
+                        elif selectedPiece != None:
+                            if chessBoard.board[bRows][bCols].pieceOccupy.toString() != "0":
+                                moves[currentAlliance] = 0
+                            else:
+                                moves[currentAlliance] += 1
+                            if selectedPiece.toString() == "P":
+                                moves[currentAlliance] = 0
+                                if selectedPiece.x_coord +2 == bRows or selectedPiece.x_coord -2 == bRows:
+                                    selectedPiece.passP = True
 
-                            if selectedPiece.alliance == "B" and bCols != y_origin:
-                                if chessBoard.board[bRows-1][bCols].pieceOccupy.toString() == "P":
-                                    if chessBoard.board[bRows-1][bCols].pieceOccupy.passP == True:
-                                        chessBoard.updateBoard(bRows-1, bCols, nullPiece())
+                                if selectedPiece.alliance == "B" and bCols != y_origin:
+                                    if chessBoard.board[bRows-1][bCols].pieceOccupy.toString() == "P":
+                                        if chessBoard.board[bRows-1][bCols].pieceOccupy.passP == True:
+                                            chessBoard.updateBoard(bRows-1, bCols, nullPiece())
 
-                            if selectedPiece.alliance == "W" and bCols != y_origin:
-                                if chessBoard.board[bRows+1][bCols].pieceOccupy.toString() == "P":
-                                    if chessBoard.board[bRows+1][bCols].pieceOccupy.passP == True:
-                                        chessBoard.updateBoard(bRows+1, bCols, nullPiece())
-                        
-                        selectedPiece.x_coord = bRows
-                        selectedPiece.y_coord = bCols
-                        if selectedPiece.fMove:
-                            selectedPiece.fMove = False
-                        chessBoard.updateBoard(bRows, bCols, selectedPiece)
-                        chessBoard.updateBoard(x_origin, y_origin, nullPiece())
-                        count += 1
-                        print(moves)
-                        # promoting check
-                        if selectedPiece.toString() == "P":
-                            if selectedPiece.alliance == "W" and selectedPiece.x_coord == 0:
-                                promoteTo = check.promoteCheck(screen,clock)
-                                chessBoard.promote(selectedPiece.x_coord, selectedPiece.y_coord, "W", promoteTo)
+                                if selectedPiece.alliance == "W" and bCols != y_origin:
+                                    if chessBoard.board[bRows+1][bCols].pieceOccupy.toString() == "P":
+                                        if chessBoard.board[bRows+1][bCols].pieceOccupy.passP == True:
+                                            chessBoard.updateBoard(bRows+1, bCols, nullPiece())
+                            
+                            selectedPiece.x_coord = bRows
+                            selectedPiece.y_coord = bCols
+                            if selectedPiece.fMove:
+                                selectedPiece.fMove = False
+                            chessBoard.updateBoard(bRows, bCols, selectedPiece)
+                            chessBoard.updateBoard(x_origin, y_origin, nullPiece())
+                            count += 1
+                            print(moves)
+                            # promoting check
+                            if selectedPiece.toString() == "P":
+                                if selectedPiece.alliance == "W" and selectedPiece.x_coord == 0:
+                                    promoteTo = check.promoteCheck(screen,clock)
+                                    chessBoard.promote(selectedPiece.x_coord, selectedPiece.y_coord, "W", promoteTo)
 
-                            if selectedPiece.alliance == "B" and selectedPiece.x_coord == 7:
-                                promoteTo = check.promoteCheck(screen,clock)
-                                chessBoard.promote(selectedPiece.x_coord, selectedPiece.y_coord, "B", promoteTo)
+                                if selectedPiece.alliance == "B" and selectedPiece.x_coord == 7:
+                                    promoteTo = check.promoteCheck(screen,clock)
+                                    chessBoard.promote(selectedPiece.x_coord, selectedPiece.y_coord, "B", promoteTo)
 
-                        switchSide()
+                            switchSide()
 
-        pygame.display.update()
-        clock.tick(60)
+            pygame.display.update()
+            clock.tick(60)
+
+while 1:
+    main()
+    gO = False
+    flip = False
+    passPawn = None
+    check = None
+    selectedPiece = None
+    count = 0
+    chessBoard = Board()
+    chessBoard.createBoard()
+    currentAlliance = "W"
+    title = TitlePage("ChessA")
+    mode = title.ModeSelect(screen,clock)
+    startGame(mode)

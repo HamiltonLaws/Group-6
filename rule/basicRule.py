@@ -250,6 +250,7 @@ class staleMate(Rule):
     repetition = 0
     opPieces = []
     allPieces = []
+    alliance = "W"
     def __init__(self, board, wPieces, bPieces, allPieces):
         self.board = board
         self.pieces = wPieces
@@ -343,8 +344,9 @@ class staleMate(Rule):
             return self.staleCase2()
 
     def staleCase2(self):
+        dict = {"W": self.pieces, "B": self.opPieces}
         count = 0
-        for i in self.pieces:
+        for i in dict[self.alliance]:
             rows = (int)(i[0]/75)
             cols = (int)(i[1]/75)
             if not self.board[rows][cols].pieceOccupy.validMove:
