@@ -47,6 +47,26 @@ flip = False
 x_origin = None
 y_origin = None
 passPawn = None
+#used to desplay messages in game
+def display_message(msg):
+
+    font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 32) 
+    text = font.render(msg, True, (0, 0, 0)) 
+
+    textRect = text.get_rect()  
+    textRect.center = (ui_width // 2, ui_height // 2) 
+
+    a= True
+
+    while a : 
+        screen.fill(white) 
+        screen.blit(text, textRect) 
+
+        for event in pygame.event.get() : 
+  
+            if event.type == pygame.QUIT : 
+                a = False
+        pygame.display.update()  
 
 def square(x_coord, y_coord, width, height, color):
     pygame.draw.rect(screen, color, [x_coord, y_coord, width, height])
@@ -153,8 +173,10 @@ def switchSide():
 
     #let the player know they are in check
     if(checked == True):
-        #make a UI popup
-        print(currentAlliance, " in in check")
+        if(currentAlliance == "W"):
+            display_message("White is in Check, Close to return to game")
+        else:
+            display_message("Black is in Check, Close to retrun to game")
 
     if passPawn is not None:
         passPawn.passP = False
@@ -250,19 +272,24 @@ def main():
                             if(checked == True):
                                 protector = check.toProtect()
                                 if(protector == True):
-                                    print("Must move a pice to protect the king or move the king to another positon")
+                                    display_message("Must move a pice to protect the king or move king")
                                     if(selectedPiece.toString()=='K'):
                                         pieceMove = check.isCheckMate()
                                     else:
                                         pieceMove = selectedPiece.validMove(chessBoard.board) 
                                 else:
-                                    print("King must be moved")
+                                    display_message("King must be moved")
                                     if(selectedPiece.toString() != 'K'):
                                         pieceMove = []
                                     else:
                                         pieceMove = check.isCheckMate()
                                         if(pieceMove == []):
-                                            print(currentAlliance, " Is in checkMate") 
+                                            if(currentAlliance == "W"):
+                                                display_message("White Is in checkMate, Black Wins")
+                                                gO = True 
+                                            else:
+                                                display_message("Black Is in checkMate, White Wins")
+                                                gO = True 
                             else:
                                 pieceMove = selectedPiece.validMove(chessBoard.board)
                             print("validMoves:", pieceMove)
