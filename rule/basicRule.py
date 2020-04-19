@@ -209,7 +209,74 @@ class Option:
         self.rect.topleft = self.pos
 ### End Promoting part ###
 
+class castling(Rule):
 
+    def __init__(self, board, moveList, piece):
+        super().__init__(board, moveList, piece)
+
+    #fulfills requirements:
+        # 1) selected castle hasn't moved
+        # 2) king has not moved
+        # 3) king is not in check
+        # 4) squares between are not occupied
+        # 5) king does not end on contested tile
+
+        # bK = (0, 4); wK = (7, 4); bR = (0,0)(0,7); wR = (7,0)(7,7)
+    def canCastle(self, board):
+        kingMoved = True
+        rookMoved = True
+        kingInCheck = True     # waiting on Hamilton to pass check/mate boolean
+        betwInCheck = True
+        betwEmpty = False
+
+        # sets the relative x coordinate depending on your alliance (side)
+        if (self.alliance is "B"):
+            kx = 0
+        else:
+            kx = 7
+
+        # check your king's starting coordinate; if it's not there, auto fail
+        if (self.board[kx][4].pieceOccupy.toString is "K"and self.board[kx][4].pieceOccupy.alliance is self.alliance):
+            yourK = self.board[kx][4].pieceOccupy
+            kingMoved = not yourK.fmove
+        else:
+            return False
+
+        # has either rook moved?
+        r1Moved = True         # which rook
+        r2Moved = True
+        cornerPiece1, cornerPiece2 = self.board[kx][7].pieceOccupy, self.board[kx][0].pieceOccupy
+        if(cornerPiece1.toString is "R" and cornerPiece1.alliance is self.alliance):
+            r1Moved = not cornerPiece1.fmove
+        if(cornerPiece2.toString is "R" and cornerPiece2.alliance is self.alliance):
+            r2Moved = not cornerPiece2.fmove
+        rookMoved = r1Moved or r2Moved
+
+        # are the spaces between empty?
+        betw1Empty = False
+        betw2Empty = False
+        if(not r1Moved):
+            for y in range(1, 4): # spaces (1, 2, 3) between left rook and king
+                if(self.board[kx][y].pieceOccupy.toString is "0"):
+                    betw1Empty = True
+                else:
+                    betw1Empty = False
+                    break
+        if(not r2Moved):
+            for y in range(5, 7): # spaces (5, 6) between king and right rook
+                if(self.board[kx][y].pieceOccupy.toString is "0"):
+                    betw1Empty = True
+                else:
+                    betw1Empty = False
+                    break
+        betwEmpty = betw1Empty or betw2Empty
+
+        ### Waiting for check/mate boolean
+
+        # check all requirements
+        if (betwEmpty and not kingInCheck and not kingMoved and not rookMoved and not kingInCheck and not betwInCheck):
+            return True
+    
 class enPassant(Rule):
     # Precondition for the attack square to be added
     #   first condition pawn need to be at a specific row that depend on the alliance
