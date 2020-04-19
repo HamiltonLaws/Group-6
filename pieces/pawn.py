@@ -35,4 +35,8 @@ class Pawn(piece):
 
         enP = enPassant(board, validCheck.moveList, self)
         enP.checkPawn()
+
+        #self.piecesMoves.append([0, 4])
+        #print("appended rand in pawn:", self.piecesMoves)
+
         return validCheck.moveList
