@@ -1,6 +1,7 @@
 from board.chessBoard import Board
 from pieces.nullPiece import nullPiece
 from rule.basicRule import Check
+from rule.basicRule import Castling
 import pygame, os, sys, time
 
 class Option:
@@ -152,6 +153,37 @@ def drawBoard():
         x_coord = 0
         y_coord += 75
 
+
+def castleRook(prevY, newY, selectedPiece):       
+    print("move rook")
+    print("toString after call", selectedPiece.toString())
+    # **old and new positions:
+    # Lf bR = (0,0) => (0, 3)
+    # Rt bR = (0,7) => (0, 5)
+    # Lf wR = (7, 0) => (7, 3)
+    # Rt wR = (7, 7) => (7, 5) 
+    # bK (0, 4) => L (0, 2), R (0, 6)
+    # wK (7, 4) => L (7, 2), R(7, 6)
+    castleState = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
+
+    if(selectedPiece.toString() == "K" and castleState.canCastle()):
+        if (selectedPiece.alliance == "B"):
+            if (newY == prevY + 2): # black right
+                chessBoard.updateBoard(0, 5, chessBoard.board[0][7].pieceOccupy)
+                chessBoard.updateBoard(0, 7, nullPiece())
+            elif (newY == prevY - 2): # black left
+                chessBoard.updateBoard(0, 3, chessBoard.board[0][0].pieceOccupy)
+                chessBoard.updateBoard(0, 0, nullPiece())
+        else:
+            if (newY == prevY + 2): # white right
+                chessBoard.updateBoard(7, 5, chessBoard.board[7][7].pieceOccupy)
+                chessBoard.updateBoard(7, 7, nullPiece())
+            elif (newY == prevY - 2): # white left
+                chessBoard.updateBoard(7, 3, chessBoard.board[7][0].pieceOccupy)
+                chessBoard.updateBoard(7, 0, nullPiece())
+
+
+
 def drawPieces(flip):
     global currentAlliance
     global allPieces
@@ -230,6 +262,12 @@ while not gO:
             #get UI coordinate
             cols, rows = pygame.mouse.get_pos()
 
+            whiteKing = chessBoard.board[7][4].pieceOccupy
+            ci = Castling(chessBoard, whiteKing.validMove, whiteKing)
+            print(ci.canCastle())
+
+            
+
             for i in currentPieces:
                 if i[0] < rows < i[0]+75 and i[1] < cols < i[1]+75:
                     bRows = (int)(i[0]/75)
@@ -241,11 +279,30 @@ while not gO:
                         #print(bRows, bCols)
                         pieceMove.clear()
                         selectedPiece = chessBoard.board[bRows][bCols].pieceOccupy
+
+                        ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
+
+                        # if(ck.canCastle()):
+                        #     if (selectedPiece.alliance == "B"):
+                        #         pieceMove.append([0, 6])
+                        #         pieceMove.append([0, 2])
+                        #     else:
+                        #         print(pieceMove)
+                        #         pieceMove.append([7, 6])
+                        #         pieceMove.append([7, 2])
+                        
                         x_origin = bRows
                         y_origin = bCols
                         print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
                         pieceMove = selectedPiece.validMove(chessBoard.board)
-                        print("validMoves:", pieceMove)
+                        if(ck.canCastle() and selectedPiece.toString() == "K"):
+                            if (selectedPiece.alliance == "B"):
+                                    pieceMove.append([0, 6])
+                                    pieceMove.append([0, 2])
+                            else:
+                                    pieceMove.append([7, 6])
+                                    pieceMove.append([7, 2])
+
                         drawBoard()
                         drawPieces(flip)
                         for j in pieceMove:
@@ -276,11 +333,19 @@ while not gO:
                                     if chessBoard.board[bRows+1][bCols].pieceOccupy.passP == True:
                                         chessBoard.updateBoard(bRows+1, bCols, nullPiece())
 
-                        selectedPiece.x_coord = bRows
-                        selectedPiece.y_coord = bCols
-                        selectedPiece.fMove = False
+
+
                         chessBoard.updateBoard(bRows, bCols, selectedPiece)
                         chessBoard.updateBoard(x_origin, y_origin, nullPiece())
+                        print("selPiece x, y coord before: ", selectedPiece.x_coord, selectedPiece.y_coord)
+                        prevKY = selectedPiece.y_coord
+                        selectedPiece.x_coord = bRows
+                        selectedPiece.y_coord = bCols
+                        print("selPiece x, y coord after: ", selectedPiece.x_coord, selectedPiece.y_coord)
+                        newKY = selectedPiece.y_coord
+                        print("selectedPiece.toString before castleRook call", selectedPiece.toString())
+                        castleRook(prevKY, newKY, selectedPiece)
+                        selectedPiece.fMove = False
                         # promoting check
                         if selectedPiece.toString() == "P":
                             if selectedPiece.alliance == "W" and selectedPiece.x_coord == 0:
