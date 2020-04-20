@@ -264,7 +264,7 @@ class staleMate(Rule):
             self.pastBoard.append(i)
     
     def repetitionCheck(self):
-        if set(self.pastBoard) == set(self.allPieces):
+        if set(self.pastBoard) & set(self.allPieces):
             self.repetition += 1
             print("Repetition", self.repetition)
             if self.repetition == 3:
@@ -377,6 +377,7 @@ class Castling(Rule):
         # wK (7, 4) => L (7, 2), R(7, 6)
 
     def canCastle(self):
+        print("run can castle")
         # sets the relative x coordinate depending on your alliance (side)
         if (self.piece.alliance == "B"):
             kx = 0
@@ -386,15 +387,11 @@ class Castling(Rule):
         kingMoved = True
         r1Moved = not self.board.board[kx][7].pieceOccupy.fMove
         r2Moved = not self.board.board[kx][0].pieceOccupy.fMove
-        kingInCheck = True     # waiting on Hamilton to pass check/mate boolean
+        kingInCheck = True     
         betwInCheck = False
         rMoved = r1Moved and r2Moved
 
-
-        # check your king's starting coordinate and if it's moved
-        if (self.board.board[kx][4].pieceOccupy.fMove):
-            yourK = self.board.board[kx][4].pieceOccupy
-            kingMoved = not yourK.fMove
+        kingMoved = not (self.piece.fMove and self.piece.toString() == "K")
         
 
         # check if spaces between are empty
@@ -407,7 +404,7 @@ class Castling(Rule):
                 break       
         betw2Empty = False
         for y in range(5, 7): # spaces (5, 6) between king and right rook
-            if(self.board.board[kx][y].pieceOccupy.toString == "0"):
+            if(self.board.board[kx][y].pieceOccupy.toString() == "0"):
                 betw1Empty = True
             else:
                 betw1Empty = False
@@ -421,16 +418,108 @@ class Castling(Rule):
         kingInCheck = king.isCheck()
 
         
-        #castleBool = not kingInCheck and not kingMoved and not betwInCheck and not rMoved and betwEmpty
+        # castleBool = not kingInCheck and not kingMoved and not betwInCheck and not rMoved and betwEmpty
         castleBool = True
 
-        # if (castleBool):
-        #     if(yourK.alliance == "B"):
-        #         yourK.piecesMoves.append([0, 6])
-        #         yourK.piecesMoves.append([0, 2])
-        #     else:
-        #         yourK.piecesMoves.append([7, 6])
-        #         yourK.piecesMoves.append([7, 2])
         return castleBool
 
+
+    def canCastleL(self):
+        # sets the relative x coordinate depending on your alliance (side)
+        if (self.piece.alliance == "B"):
+            kx = 0
+        else:
+            kx = 7
+
+        kingMoved = True
+        r1Moved = not self.board.board[kx][0].pieceOccupy.fMove
+        # r2Moved = not self.board.board[kx][7].pieceOccupy.fMove
+
+        kingInCheck = True     
+        betwInCheck = False
+        # rMoved = r1Moved and r2Moved
+
+
+        # check your king's starting coordinate if it's moved
+        # if (self.board.board[kx][4].pieceOccupy.fMove):
+        #     yourK = self.board.board[kx][4].pieceOccupy
+        kingMoved = not (self.piece.fMove and self.piece.toString() == "K")
+        
+
+        # check if spaces between are empty
+        betw1Empty = False
+        if(self.board.board[kx][1].pieceOccupy.toString() == "0" and self.board.board[kx][2].pieceOccupy.toString() == "0" and self.board.board[kx][3].pieceOccupy.toString() == "0"):
+            betw1Empty = True    
+        # betw2Empty = False
+        # for y in range(5, 7): # spaces (5, 6) between king and right rook
+        #     if(self.board.board[kx][y].pieceOccupy.toString == "0"):
+        #         betw1Empty = True
+        #     else:
+        #         betw1Empty = False
+        #         break
+        # betwEmpty = betw1Empty and betw2Empty
+        
+        oppAlly = "B"
+        if (self.piece.alliance == "B"):
+            oppAlly = "W"
+        king = Check(self.board.board, oppAlly)
+        kingInCheck = king.isCheck()
+
+        
+        castleBool = not kingInCheck and not kingMoved and not r1Moved and betw1Empty
+        print("castle L", not kingInCheck, not kingMoved, not r1Moved, betw1Empty)
+
+        return castleBool
+
+
+    def canCastleR(self):
+        print("run canCastleR")
+        # sets the relative x coordinate depending on your alliance (side)
+        if (self.piece.alliance == "B"):
+            kx = 0
+        else:
+            kx = 7
+
+        kingMoved = True
+        # r1Moved = not self.board.board[kx][0].pieceOccupy.fMove
+        r2Moved = not self.board.board[kx][7].pieceOccupy.fMove
+        kingInCheck = True     
+        betwInCheck = False
+        # rMoved = r1Moved and r2Moved
+
+
+        # check your king's starting coordinate and if it's moved
+        # if (self.board.board[kx][4].pieceOccupy.fMove):
+        #     yourK = self.board.board[kx][4].pieceOccupy
+        #     kingMoved = not yourK.fMove
+        
+        kingMoved = not (self.piece.fMove and self.piece.toString() == "K")
+
+        # check if spaces between are empty
+        # betw1Empty = False
+        # for y in range(1, 4): # spaces (1, 2, 3) between left rook and king
+        #     if(self.board.board[kx][y].pieceOccupy.toString == "0"):
+        #         betw1Empty = True
+        #     else:
+        #         betw1Empty = False
+        #         break       
+        betw2Empty = False
+
+        print('betw2 run')
+        if(self.board.board[kx][5].pieceOccupy.toString() == "0" and self.board.board[kx][6].pieceOccupy.toString() == "0"):
+            betw2Empty = True
+
+        # betwEmpty = betw1Empty and betw2Empty
+        
+        oppAlly = "B"
+        if (self.piece.alliance == "B"):
+            oppAlly = "W"
+        king = Check(self.board.board, oppAlly)
+        kingInCheck = king.isCheck()
+
+        
+        castleBool = not kingInCheck and not kingMoved and not r2Moved and betw2Empty
+        print("castle R", not kingInCheck, not kingMoved, not r2Moved, betw2Empty)
+
+        return castleBool
 
