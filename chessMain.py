@@ -36,6 +36,7 @@ playerAlliance = None
 stalemate = None
 protector = None
 count = 0
+yText = 10
 
 pieceMove = []
 currentAlliance = "W"
@@ -50,24 +51,15 @@ y_origin = None
 passPawn = None
 
 def display_message(msg):
-
-    font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 32) 
-    text = font.render(msg, True, (0, 0, 0)) 
-
+    global yText
+    font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 14) 
+    text = font.render(msg, True, (255, 255, 255)) 
     textRect = text.get_rect()  
-    textRect.center = (ui_width // 2, ui_height // 2) 
-
-    a= True
-
-    while a : 
-        screen.fill(white) 
-        screen.blit(text, textRect) 
-
-        for event in pygame.event.get() : 
-  
-            if event.type == pygame.QUIT : 
-                a = False
-        pygame.display.update()  
+    textRect.center = (800, yText) 
+    yText += 16
+    screen.blit(text, textRect) 
+    pygame.display.update() 
+    
 
 def square(x_coord, y_coord, width, height, color):
     pygame.draw.rect(screen, color, [x_coord, y_coord, width, height])
@@ -204,9 +196,9 @@ def switchSide():
     #let the player know they are in check
     if(checked == True):
         if(currentAlliance == "W"):
-            display_message("White is in Check, Close to return to game")
+            display_message("White is in Check")
         else:
-            display_message("Black is in Check, Close to retrun to game")
+            display_message("Black is in Check")
 
     if passPawn is not None:
         passPawn.passP = False
@@ -315,6 +307,7 @@ def main():
                                     pieceMove.append([7, 2])
                             
                             if(checked == True):
+                                kingMove = check.isCheckMate()
                                 protector = check.toProtect()
                                 if(protector == True):
                                     display_message("Must move a pice to protect the king or move king")
@@ -323,18 +316,20 @@ def main():
                                     else:
                                         pieceMove = selectedPiece.validMove(chessBoard.board) 
                                 else:
-                                    display_message("King must be moved")
+                                    if(kingMove == []):
+                                        if(currentAlliance == "W"):
+                                            display_message("White Is in checkMate, Black Wins")
+                                            time.sleep(2)
+                                            gO = True 
+                                        else:
+                                            display_message("Black Is in checkMate, White Wins")
+                                            time.sleep(2)
+                                            gO = True 
                                     if(selectedPiece.toString() != 'K'):
+                                        display_message("King must be moved")
                                         pieceMove = []
                                     else:
                                         pieceMove = check.isCheckMate()
-                                        if(pieceMove == []):
-                                            if(currentAlliance == "W"):
-                                                display_message("White Is in checkMate, Black Wins")
-                                                gO = True 
-                                            else:
-                                                display_message("Black Is in checkMate, White Wins")
-                                                gO = True 
                             else:
                                 pieceMove = selectedPiece.validMove(chessBoard.board)
                                 if(ck.canCastle() and selectedPiece.toString() == "K"):
@@ -424,4 +419,6 @@ while 1:
     startGame(mode)
     gO = False
     main()
+
+
 
