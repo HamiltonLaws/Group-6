@@ -57,9 +57,14 @@ def display_message(msg):
     textRect = text.get_rect()  
     textRect.center = (800, yText) 
     yText += 16
-    screen.blit(text, textRect) 
-    pygame.display.update() 
-    
+    screen.blit(text, textRect)
+    a = True
+    while a:
+        for event in pygame.event.get(): 
+            if event.type == pygame.MOUSEBUTTONDOWN : 
+                a = False
+        pygame.display.update()  
+      
 
 def square(x_coord, y_coord, width, height, color):
     pygame.draw.rect(screen, color, [x_coord, y_coord, width, height])
