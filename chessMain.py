@@ -293,7 +293,7 @@ def main():
                         if chessBoard.board[bRows][bCols].pieceOccupy.alliance == currentAlliance:
                             #print(bRows, bCols)
                             pieceMove.clear()
-                            ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
+                            #ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
 
                         # if(ck.canCastle()):
                         #     if (selectedPiece.alliance == "B"):
@@ -332,13 +332,13 @@ def main():
                                                 gO = True 
                             else:
                                 pieceMove = selectedPiece.validMove(chessBoard.board)
-                                 if(ck.canCastle() and selectedPiece.toString() == "K"):
-                                    if (selectedPiece.alliance == "B"):
-                                        pieceMove.append([0, 6])
-                                        pieceMove.append([0, 2])
-                                    else:
-                                        pieceMove.append([7, 6])
-                                        pieceMove.append([7, 2])
+                                #if(ck.canCastle() and selectedPiece.toString() == "K"):
+                                   # if (selectedPiece.alliance == "B"):
+                                       # pieceMove.append([0, 6])
+                                       # pieceMove.append([0, 2])
+                                    #else:
+                                       # pieceMove.append([7, 6])
+                                       # pieceMove.append([7, 2])
                             print("validMoves:", pieceMove)
                             drawBoard()
                             drawPieces(flip)
@@ -374,11 +374,11 @@ def main():
                                         if chessBoard.board[bRows+1][bCols].pieceOccupy.passP == True:
                                             chessBoard.updateBoard(bRows+1, bCols, nullPiece())
                             
-                            prevKY = selectedPiece.y_coord
+                            #prevKY = selectedPiece.y_coord
                             selectedPiece.x_coord = bRows
                             selectedPiece.y_coord = bCols
-                            newKY = selectedPiece.y_coord
-                            castleRook(prevKY, newKY, selectedPiece)
+                            #newKY = selectedPiece.y_coord
+                            #castleRook(prevKY, newKY, selectedPiece)
                             if selectedPiece.fMove:
                                 selectedPiece.fMove = False
                             chessBoard.updateBoard(bRows, bCols, selectedPiece)
@@ -415,3 +415,4 @@ while 1:
     startGame(mode)
     gO = False
     main()
+
