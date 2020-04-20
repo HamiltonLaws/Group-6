@@ -1,6 +1,5 @@
 from board.chessBoard import Board
 from titlePage import TitlePage
-from titlePage import ReturnButton
 from pieces.nullPiece import nullPiece
 from rule.basicRule import Check
 from rule.basicRule import staleMate
@@ -12,7 +11,7 @@ pygame.init()
 
 black, white = (0, 0, 0), (255, 255, 255)
 
-ui_width, ui_height = 600, 600
+ui_width, ui_height = 1000, 600
 
 screen = pygame.display.set_mode((ui_width, ui_height))
 screen = pygame.display.get_surface()
@@ -37,7 +36,6 @@ playerAlliance = None
 stalemate = None
 protector = None
 count = 0
-yText = 650
 
 pieceMove = []
 currentAlliance = "W"
@@ -50,17 +48,26 @@ flip = False
 x_origin = None
 y_origin = None
 passPawn = None
-pieceSrc = "./art/"
+
 def display_message(msg):
-    global yText
-    font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 14) 
-    text = font.render(msg, True, (255, 255, 255)) 
+
+    font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 32) 
+    text = font.render(msg, True, (0, 0, 0)) 
+
     textRect = text.get_rect()  
-    textRect.center = (300, yText) 
-    yText += 16
-    screen.blit(text, textRect)
-    pygame.display.update()  
-      
+    textRect.center = (ui_width // 2, ui_height // 2) 
+
+    a= True
+
+    while a : 
+        screen.fill(white) 
+        screen.blit(text, textRect) 
+
+        for event in pygame.event.get() : 
+  
+            if event.type == pygame.QUIT : 
+                a = False
+        pygame.display.update()  
 
 def square(x_coord, y_coord, width, height, color):
     pygame.draw.rect(screen, color, [x_coord, y_coord, width, height])
@@ -88,7 +95,7 @@ def drawBoard():
 
 def castleRook(prevY, newY, selectedPiece):       
     print("move rook")
-    print("toString after call", selectedPiece.toString())
+    # print("toString after call", selectedPiece.toString())
     # **old and new positions:
     # Lf bR = (0,0) => (0, 3)
     # Rt bR = (0,7) => (0, 5)
@@ -102,16 +109,20 @@ def castleRook(prevY, newY, selectedPiece):
         if (selectedPiece.alliance == "B"):
             if (newY == prevY + 2): # black right
                 chessBoard.updateBoard(0, 5, chessBoard.board[0][7].pieceOccupy)
+                chessBoard.board[0][5].pieceOccupy.y_coord = 5
                 chessBoard.updateBoard(0, 7, nullPiece())
             elif (newY == prevY - 2): # black left
                 chessBoard.updateBoard(0, 3, chessBoard.board[0][0].pieceOccupy)
+                chessBoard.board[0][3].pieceOccupy.y_coord = 3
                 chessBoard.updateBoard(0, 0, nullPiece())
         else:
             if (newY == prevY + 2): # white right
                 chessBoard.updateBoard(7, 5, chessBoard.board[7][7].pieceOccupy)
+                chessBoard.board[7][5].pieceOccupy.y_coord = 5
                 chessBoard.updateBoard(7, 7, nullPiece())
             elif (newY == prevY - 2): # white left
                 chessBoard.updateBoard(7, 3, chessBoard.board[7][0].pieceOccupy)
+                chessBoard.board[7][3].pieceOccupy.y_coord = 3
                 chessBoard.updateBoard(7, 0, nullPiece())
 
 
@@ -133,15 +144,15 @@ def drawPieces(flip):
         for rows in range(8):
             for cols in range(8):
                 if not chessBoard.board[rows][cols].pieceOccupy.toString() == "0":
-                    img = pygame.image.load(pieceSrc
+                    img = pygame.image.load("./art/" 
                             + chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper()
                             + chessBoard.board[rows][cols].pieceOccupy.toString().upper()
                             + ".png")
                     img = pygame.transform.scale(img, (width, height))
                     if chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "W":
-                        wPieces.append((y_coord, x_coord))
+                        wPieces.append([y_coord, x_coord])
                     elif chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "B":
-                        bPieces.append((y_coord, x_coord))
+                        bPieces.append([y_coord, x_coord])
                     allPieces.append([[y_coord, x_coord], img])
                     Pieces.append((y_coord, x_coord))
                 x_coord += 75
@@ -151,15 +162,15 @@ def drawPieces(flip):
         for rows in reversed(range(8)):
             for cols in reversed(range(8)):
                 if not chessBoard.board[rows][cols].pieceOccupy.toString() == "0":
-                    img = pygame.image.load(pieceSrc
+                    img = pygame.image.load("./art/" 
                             + chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper()
                             + chessBoard.board[rows][cols].pieceOccupy.toString().upper()
                             + ".png")
                     img = pygame.transform.scale(img, (width, height))
                     if chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "W":
-                        wPieces.append((y_coord, x_coord))
+                        wPieces.append([y_coord, x_coord])
                     elif chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "B":
-                        bPieces.append((y_coord, x_coord))
+                        bPieces.append([y_coord, x_coord])
                     allPieces.append([[y_coord, x_coord], img])
                     Pieces.append((y_coord, x_coord))
                 x_coord += 75
@@ -197,9 +208,9 @@ def switchSide():
     #let the player know they are in check
     if(checked == True):
         if(currentAlliance == "W"):
-            display_message("White is in Check")
+            display_message("White is in Check, Close to return to game")
         else:
-            display_message("Black is in Check")
+            display_message("Black is in Check, Close to retrun to game")
 
     if passPawn is not None:
         passPawn.passP = False
@@ -208,16 +219,16 @@ def switchSide():
     drawBoard()
     drawPieces(flip)
     stalemate.alliance = currentAlliance
-    if stalemate.staleCase2():
-        display_message("Stalemate")
-        gO = True
-    if selectedPiece.toString() == "P" and selectedPiece.passP is True:
-        passPawn = selectedPiece
-    if count == 4:
-        if stalemate.repetitionCheck():
-            display_message("Stalemate")
-            gO = True
-        count = 0
+    # if stalemate.staleCase2():
+    #     display_message("Stalemate")
+    #     gO = True
+    # if selectedPiece.toString() == "P" and selectedPiece.passP is True:
+    #     passPawn = selectedPiece
+    # if count == 4:
+    #     if stalemate.repetitionCheck():
+    #         display_message("Stalemate")
+    #         gO = True
+    #     count = 0
 
 def startGame(mode):
     global playerAlliance
@@ -263,14 +274,10 @@ def main():
                 moves[currentAlliance] += move
             else:
                 moves[currentAlliance] = 0
-            if selectedPiece is None:
-                gO = True
-                display_message("Game Over, Bot lose")
-                break
             print(moves)
             switchSide()
             continue
-        ReturnButton(screen)
+
         for event in pygame.event.get():
             #print(event)
             if event.type == pygame.QUIT:
@@ -281,12 +288,8 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 #get UI coordinate
                 cols, rows = pygame.mouse.get_pos()
-                if cols > 600 or rows > 650:
+                if cols > 600 or rows > 600:
                     pass
-                if 5 < cols < 295 and 605 < rows < 645:
-                    gO = True
-                elif 305 < cols < 595 and 605 < rows < 645:
-                    exit()
 
                 for i in currentPieces:
                     if i[0] < rows < i[0]+75 and i[1] < cols < i[1]+75:
@@ -306,46 +309,53 @@ def main():
 
                             ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
 
-                            if ck.canCastle() and selectedPiece.toString == "K":
-                                if (selectedPiece.alliance == "B"):
-                                    pieceMove.append([0, 6])
-                                    pieceMove.append([0, 2])
-                                else:
-                                    print(pieceMove)
-                                    pieceMove.append([7, 6])
-                                    pieceMove.append([7, 2])
                             
                             if(checked == True):
-                                kingMove = check.isCheckMate()
                                 protector = check.toProtect()
                                 if(protector == True):
-                                    display_message("Must move a pice to protect the king or move king")
+                                    display_message("Must move a piece to protect the king or move king")
                                     if(selectedPiece.toString()=='K'):
                                         pieceMove = check.isCheckMate()
                                     else:
                                         pieceMove = selectedPiece.validMove(chessBoard.board) 
                                 else:
-                                    if(kingMove == []):
-                                        if(currentAlliance == "W"):
-                                            display_message("White Is in checkMate, Black Wins")
-                                            gO = True 
-                                        else:
-                                            display_message("Black Is in checkMate, White Wins")
-                                            gO = True 
+                                    display_message("King must be moved")
                                     if(selectedPiece.toString() != 'K'):
-                                        display_message("King must be moved")
                                         pieceMove = []
                                     else:
                                         pieceMove = check.isCheckMate()
+                                        if(pieceMove == []):
+                                            if(currentAlliance == "W"):
+                                                display_message("White Is in checkMate, Black Wins")
+                                                gO = True 
+                                            else:
+                                                display_message("Black Is in checkMate, White Wins")
+                                                gO = True 
                             else:
                                 pieceMove = selectedPiece.validMove(chessBoard.board)
-                                if(ck.canCastle() and selectedPiece.toString() == "K"):
+                                # if(ck.canCastle() and selectedPiece.toString() == "K"):
+                                #     if (selectedPiece.alliance == "B"):
+                                #         pieceMove.append([0, 6])
+                                #         pieceMove.append([0, 2])
+                                #     else:
+                                #         pieceMove.append([7, 6])
+                                #         pieceMove.append([7, 2])
+
+                                if(selectedPiece.toString() == "K"):
                                     if (selectedPiece.alliance == "B"):
-                                        pieceMove.append([0, 6])
-                                        pieceMove.append([0, 2])
+                                        if ck.canCastleR():
+                                            print("castle bR")
+                                            pieceMove.append([0, 6])
+                                        if ck.canCastleL():
+                                            print("castle bL")
+                                            pieceMove.append([0, 2])
                                     else:
-                                        pieceMove.append([7, 6])
-                                        pieceMove.append([7, 2])
+                                        if ck.canCastleR():
+                                            print("castle wL")
+                                            pieceMove.append([7, 6])
+                                        if ck.canCastleL():
+                                            print("castle wR")
+                                            pieceMove.append([7, 2])
                             print("validMoves:", pieceMove)
                             drawBoard()
                             drawPieces(flip)
@@ -408,8 +418,6 @@ def main():
             clock.tick(60)
 
 while 1:
-    ui_width, ui_height = 600, 600
-    screen = pygame.display.set_mode((ui_width, ui_height))
     flip = False
     passPawn = None
     check = None
@@ -419,23 +427,9 @@ while 1:
     chessBoard = Board()
     chessBoard.createBoard()
     currentAlliance = "W"
-
     title = TitlePage("ChessA")
     mode = title.ModeSelect(screen,clock)
-    colorset = title.ColorSet(screen, clock)
-    if colorset == "set2":
-        pieceSrc = "./art/chess icon/"
-        black = (222, 184, 135)
-    elif colorset == "set3":
-        pieceSrc = "./art/"
-        # black = (210, 105, 30)
-        black = (222, 184, 135)
-    else:
-        pieceSrc = "./art/"
-        black = (7, 7, 7)
-
-    ui_width, ui_height = 600, 1200
-    screen = pygame.display.set_mode((ui_width, ui_height))
     startGame(mode)
     gO = False
     main()
+
