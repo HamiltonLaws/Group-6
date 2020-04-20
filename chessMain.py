@@ -59,12 +59,7 @@ def display_message(msg):
     textRect.center = (800, yText) 
     yText += 16
     screen.blit(text, textRect)
-    a = True
-    while a:
-        for event in pygame.event.get(): 
-            if event.type == pygame.MOUSEBUTTONDOWN : 
-                a = False
-        pygame.display.update()  
+    pygame.display.update()  
       
 
 def square(x_coord, y_coord, width, height, color):
@@ -439,7 +434,7 @@ while 1:
         pieceSrc = "./art/"
         black = (7, 7, 7)
 
-    ui_width, ui_height = 600, 650
+    ui_width, ui_height = 1000, 650
     screen = pygame.display.set_mode((ui_width, ui_height))
     startGame(mode)
     gO = False
