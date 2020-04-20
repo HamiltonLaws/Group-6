@@ -63,19 +63,29 @@ class dumbBot(Bot):
         selectedPiece = self.selectedPiece
         chessBoard = self.chessBoard
         pieces = self.pieces
-        while True:
+        moves = 0
+        count = 0
+        selectedPiece = None
+        removeList = []
+        while pieces:
             chosenPiece = random.choice(pieces)
             rows = (int)(chosenPiece[0]/75)
             cols = (int)(chosenPiece[1]/75)
-            selectedPiece = chessBoard.board[rows][cols].pieceOccupy
-            pieceMove = selectedPiece.validMove(chessBoard.board)
-            if pieceMove == list():
-                continue
-            else: 
-                break
-        print("Bot selected", selectedPiece, "at coordination: [", selectedPiece.x_coord, ", ", selectedPiece.y_coord, "]")
-        chosenMove = random.choice(pieceMove)
-        x = chosenMove[0]
-        y = chosenMove[1]
-        moves = super().Move(selectedPiece, x, y)
+            if (rows, cols) not in removeList:
+                selectedPiece = chessBoard.board[rows][cols].pieceOccupy
+                pieceMove = selectedPiece.validMove(chessBoard.board)
+                if pieceMove == list():
+                    count += 1
+                    removeList.append((rows, cols))
+                    if count == 3:
+                        pieces = [i for i in pieces if i not in removeList]
+                        selectedPiece = None
+                    continue
+                else: 
+                    print("Bot selected", selectedPiece, "at coordination: [", selectedPiece.x_coord, ", ", selectedPiece.y_coord, "]")
+                    chosenMove = random.choice(pieceMove)
+                    x = chosenMove[0]
+                    y = chosenMove[1]
+                    moves = super().Move(selectedPiece, x, y)
+                    break
         return selectedPiece, moves

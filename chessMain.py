@@ -146,9 +146,9 @@ def drawPieces(flip):
                             + ".png")
                     img = pygame.transform.scale(img, (width, height))
                     if chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "W":
-                        wPieces.append([y_coord, x_coord])
+                        wPieces.append((y_coord, x_coord))
                     elif chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "B":
-                        bPieces.append([y_coord, x_coord])
+                        bPieces.append((y_coord, x_coord))
                     allPieces.append([[y_coord, x_coord], img])
                     Pieces.append((y_coord, x_coord))
                 x_coord += 75
@@ -164,9 +164,9 @@ def drawPieces(flip):
                             + ".png")
                     img = pygame.transform.scale(img, (width, height))
                     if chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "W":
-                        wPieces.append([y_coord, x_coord])
+                        wPieces.append((y_coord, x_coord))
                     elif chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "B":
-                        bPieces.append([y_coord, x_coord])
+                        bPieces.append((y_coord, x_coord))
                     allPieces.append([[y_coord, x_coord], img])
                     Pieces.append((y_coord, x_coord))
                 x_coord += 75
@@ -270,6 +270,10 @@ def main():
                 moves[currentAlliance] += move
             else:
                 moves[currentAlliance] = 0
+            if selectedPiece is None:
+                gO = True
+                display_message("Game Over, Bot lose")
+                break
             print(moves)
             switchSide()
             continue
@@ -424,4 +428,3 @@ while 1:
     startGame(mode)
     gO = False
     main()
-

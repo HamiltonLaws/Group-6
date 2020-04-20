@@ -264,7 +264,7 @@ class staleMate(Rule):
             self.pastBoard.append(i)
     
     def repetitionCheck(self):
-        if set(self.pastBoard) & set(self.allPieces):
+        if set(self.pastBoard) == set(self.allPieces):
             self.repetition += 1
             print("Repetition", self.repetition)
             if self.repetition == 3:
