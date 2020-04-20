@@ -58,6 +58,57 @@ class TitlePage:
     ### Title part ###
     def __init__(self,title1):
         self.title = title1
+    def ColorSet(self,screen,clock):
+        black, white = (0, 0, 0), (255, 255, 255)
+        box_length = 240
+        box_height = 35
+        box1_x = 50
+        box1_y = 415
+        box2_x = 180
+        box2_y = 465
+        box3_x = 320
+        box3_y = 415
+        img = pygame.image.load("./art/background.png")
+        img = pygame.transform.scale(img, (600, 600))
+        screen.blit(img, (0, 0))
+        Title(self.title, (140, 50), screen)
+
+        pygame.draw.rect(screen, black, [box1_x, box1_y, box_length, box_height])
+        pygame.draw.rect(screen, white, [box1_x + 1, box1_y + 1, box_length - 2, box_height - 2])
+
+        pygame.draw.rect(screen, black, [box2_x, box2_y, box_length, box_height])
+        pygame.draw.rect(screen, white, [box2_x + 1, box2_y + 1, box_length - 2, box_height - 2])
+
+        pygame.draw.rect(screen, black, [box3_x, box3_y, box_length, box_height])
+        pygame.draw.rect(screen, white, [box3_x + 1, box3_y + 1, box_length - 2, box_height - 2])
+
+        gameTypes = [Option("Set 1", (box1_x + 90, box1_y - 5), screen),
+                     Option("Set 3", (box2_x + 90, box2_y - 5), screen),
+                     Option("Set 2", (box3_x + 90, box3_y - 5),screen)]
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # get UI coordinate
+                    cols, rows = pygame.mouse.get_pos()
+                    if box1_x < cols < box1_x + 240 and box1_y < rows < box1_y + 30:
+                        return "set1"
+                    if box2_x < cols < box2_x + 240 and box2_y < rows < box2_y + 30:
+                        return "set3"
+                    if box3_x < cols < box3_x + 240 and box3_y < rows < box3_y + 30:
+                        return "set2"
+
+            for gameType in gameTypes:
+                if gameType.rect.collidepoint(pygame.mouse.get_pos()):
+                    gameType.hovered = True
+                else:
+                    gameType.hovered = False
+                gameType.draw(screen)
+                pygame.display.update()
+            clock.tick(15)
 
     def ModeSelect(self,screen,clock):
         black, white = (0, 0, 0), (255, 255, 255)

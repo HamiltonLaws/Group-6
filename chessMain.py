@@ -49,7 +49,7 @@ flip = False
 x_origin = None
 y_origin = None
 passPawn = None
-
+pieceSrc = "./art/"
 def display_message(msg):
     global yText
     font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 14) 
@@ -132,7 +132,7 @@ def drawPieces(flip):
         for rows in range(8):
             for cols in range(8):
                 if not chessBoard.board[rows][cols].pieceOccupy.toString() == "0":
-                    img = pygame.image.load("./art/" 
+                    img = pygame.image.load(pieceSrc
                             + chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper()
                             + chessBoard.board[rows][cols].pieceOccupy.toString().upper()
                             + ".png")
@@ -150,7 +150,7 @@ def drawPieces(flip):
         for rows in reversed(range(8)):
             for cols in reversed(range(8)):
                 if not chessBoard.board[rows][cols].pieceOccupy.toString() == "0":
-                    img = pygame.image.load("./art/" 
+                    img = pygame.image.load(pieceSrc
                             + chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper()
                             + chessBoard.board[rows][cols].pieceOccupy.toString().upper()
                             + ".png")
@@ -416,8 +416,21 @@ while 1:
     chessBoard = Board()
     chessBoard.createBoard()
     currentAlliance = "W"
+
     title = TitlePage("ChessA")
     mode = title.ModeSelect(screen,clock)
+    colorset = title.ColorSet(screen, clock)
+    if colorset == "set2":
+        pieceSrc = "./art/chess icon/"
+        black = (222, 184, 135)
+    elif colorset == "set3":
+        pieceSrc = "./art/"
+        # black = (210, 105, 30)
+        black = (222, 184, 135)
+    else:
+        pieceSrc = "./art/"
+        black = (0, 0, 0)
+
     ui_width, ui_height = 1000, 600
     screen = pygame.display.set_mode((ui_width, ui_height))
     startGame(mode)
