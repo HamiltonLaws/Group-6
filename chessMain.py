@@ -3,14 +3,15 @@ from titlePage import TitlePage
 from pieces.nullPiece import nullPiece
 from rule.basicRule import Check
 from rule.basicRule import staleMate
+from rule.basicRule import Castling
 from Bot import dumbBot
 import pygame, os, sys, time, random
 
 pygame.init()
 
-black, white = (222, 184, 135), (255, 255, 255)
+black, white = (0, 0, 0), (255, 255, 255)
 
-ui_width, ui_height = 600, 600
+ui_width, ui_height = 1000, 600
 
 screen = pygame.display.set_mode((ui_width, ui_height))
 screen = pygame.display.get_surface()
@@ -187,7 +188,7 @@ def switchSide():
     global count
     global gO
     if moves[currentAlliance] == 50:
-        print("50 Shade of Stale")
+        display_message("50 Shade of Stale")
         gO = True
     #The check condition#
     check = Check(chessBoard.board,currentAlliance)
@@ -215,12 +216,13 @@ def switchSide():
     drawPieces(flip)
     stalemate.alliance = currentAlliance
     if stalemate.staleCase2():
-        print("No where to go stale")
+        display_message("Stalemate")
         gO = True
     if selectedPiece.toString() == "P" and selectedPiece.passP is True:
         passPawn = selectedPiece
     if count == 4:
         if stalemate.repetitionCheck():
+            display_message("Stalemate")
             gO = True
         count = 0
 
@@ -282,6 +284,8 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 #get UI coordinate
                 cols, rows = pygame.mouse.get_pos()
+                if cols > 600 or rows > 600:
+                    pass
 
                 for i in currentPieces:
                     if i[0] < rows < i[0]+75 and i[1] < cols < i[1]+75:
@@ -293,21 +297,22 @@ def main():
                         if chessBoard.board[bRows][bCols].pieceOccupy.alliance == currentAlliance:
                             #print(bRows, bCols)
                             pieceMove.clear()
-                            ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
-
-                        # if(ck.canCastle()):
-                        #     if (selectedPiece.alliance == "B"):
-                        #         pieceMove.append([0, 6])
-                        #         pieceMove.append([0, 2])
-                        #     else:
-                        #         print(pieceMove)
-                        #         pieceMove.append([7, 6])
-                        #         pieceMove.append([7, 2])
 
                             selectedPiece = chessBoard.board[bRows][bCols].pieceOccupy
                             x_origin = bRows
                             y_origin = bCols
                             print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
+
+                            ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
+
+                            if ck.canCastle() and selectedPiece.toString == "K":
+                                if (selectedPiece.alliance == "B"):
+                                    pieceMove.append([0, 6])
+                                    pieceMove.append([0, 2])
+                                else:
+                                    print(pieceMove)
+                                    pieceMove.append([7, 6])
+                                    pieceMove.append([7, 2])
                             
                             if(checked == True):
                                 protector = check.toProtect()
@@ -332,7 +337,7 @@ def main():
                                                 gO = True 
                             else:
                                 pieceMove = selectedPiece.validMove(chessBoard.board)
-                                 if(ck.canCastle() and selectedPiece.toString() == "K"):
+                                if(ck.canCastle() and selectedPiece.toString() == "K"):
                                     if (selectedPiece.alliance == "B"):
                                         pieceMove.append([0, 6])
                                         pieceMove.append([0, 2])

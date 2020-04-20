@@ -356,7 +356,6 @@ class staleMate(Rule):
             else:
                 return False
 
-
 class Castling(Rule):
 
     def __init__(self, board, moveList, piece):
