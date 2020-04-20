@@ -37,7 +37,7 @@ playerAlliance = None
 stalemate = None
 protector = None
 count = 0
-yText = 10
+yText = 650
 
 pieceMove = []
 currentAlliance = "W"
@@ -56,7 +56,7 @@ def display_message(msg):
     font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 14) 
     text = font.render(msg, True, (255, 255, 255)) 
     textRect = text.get_rect()  
-    textRect.center = (800, yText) 
+    textRect.center = (300, yText) 
     yText += 16
     screen.blit(text, textRect)
     pygame.display.update()  
@@ -434,7 +434,7 @@ while 1:
         pieceSrc = "./art/"
         black = (7, 7, 7)
 
-    ui_width, ui_height = 1000, 650
+    ui_width, ui_height = 600, 1200
     screen = pygame.display.set_mode((ui_width, ui_height))
     startGame(mode)
     gO = False
