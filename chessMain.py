@@ -328,11 +328,9 @@ def main():
                                     if(kingMove == []):
                                         if(currentAlliance == "W"):
                                             display_message("White Is in checkMate, Black Wins")
-                                            time.sleep(2)
                                             gO = True 
                                         else:
                                             display_message("Black Is in checkMate, White Wins")
-                                            time.sleep(2)
                                             gO = True 
                                     if(selectedPiece.toString() != 'K'):
                                         display_message("King must be moved")

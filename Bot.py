@@ -64,7 +64,6 @@ class dumbBot(Bot):
         chessBoard = self.chessBoard
         pieces = self.pieces
         moves = 0
-        count = 0
         selectedPiece = None
         removeList = []
         while pieces:
@@ -75,11 +74,11 @@ class dumbBot(Bot):
                 selectedPiece = chessBoard.board[rows][cols].pieceOccupy
                 pieceMove = selectedPiece.validMove(chessBoard.board)
                 if pieceMove == list():
-                    count += 1
                     removeList.append((rows, cols))
-                    if count == 3:
-                        pieces = [i for i in pieces if i not in removeList]
-                        selectedPiece = None
+                    pieces = [i for i in pieces if i not in removeList]
+                    selectedPiece = None
+                    if pieces == set():
+                        break
                     continue
                 else: 
                     print("Bot selected", selectedPiece, "at coordination: [", selectedPiece.x_coord, ", ", selectedPiece.y_coord, "]")
