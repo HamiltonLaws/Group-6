@@ -168,7 +168,7 @@ def drawPieces(flip):
                     elif chessBoard.board[rows][cols].pieceOccupy.alliance[0].upper() == "B":
                         bPieces.append([y_coord, x_coord])
                     allPieces.append([[y_coord, x_coord], img])
-                    Pieces.append([y_coord, x_coord])
+                    Pieces.append((y_coord, x_coord))
                 x_coord += 75
             x_coord = 0
             y_coord += 75
