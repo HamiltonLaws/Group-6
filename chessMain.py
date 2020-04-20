@@ -1,5 +1,6 @@
 from board.chessBoard import Board
 from titlePage import TitlePage
+from titlePage import ReturnButton
 from pieces.nullPiece import nullPiece
 from rule.basicRule import Check
 from rule.basicRule import staleMate
@@ -274,7 +275,7 @@ def main():
             print(moves)
             switchSide()
             continue
-
+        ReturnButton(screen)
         for event in pygame.event.get():
             #print(event)
             if event.type == pygame.QUIT:
@@ -285,8 +286,12 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 #get UI coordinate
                 cols, rows = pygame.mouse.get_pos()
-                if cols > 600 or rows > 600:
+                if cols > 600 or rows > 650:
                     pass
+                if 5 < cols < 295 and 605 < rows < 645:
+                    gO = True
+                elif 305 < cols < 595 and 605 < rows < 645:
+                    exit()
 
                 for i in currentPieces:
                     if i[0] < rows < i[0]+75 and i[1] < cols < i[1]+75:
@@ -432,9 +437,9 @@ while 1:
         black = (222, 184, 135)
     else:
         pieceSrc = "./art/"
-        black = (0, 0, 0)
+        black = (7, 7, 7)
 
-    ui_width, ui_height = 1000, 600
+    ui_width, ui_height = 600, 650
     screen = pygame.display.set_mode((ui_width, ui_height))
     startGame(mode)
     gO = False

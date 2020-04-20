@@ -54,6 +54,24 @@ class Title:
         self.rect = self.rend.get_rect()
         self.rect.topleft = self.pos
 
+class ReturnButton:
+
+    def __init__(self,screen):
+        black, white = (210, 105, 30), (255, 255, 255)
+        box_length = 290
+        box_height = 40
+        box1_x = 5
+        box1_y = 605
+        box2_x = 305
+        box2_y = 605
+
+        pygame.draw.rect(screen, black, [box1_x, box1_y, box_length, box_height])
+        pygame.draw.rect(screen, white, [box1_x + 1, box1_y + 1, box_length - 2, box_height - 2])
+        pygame.draw.rect(screen, black, [box2_x, box2_y, box_length, box_height])
+        pygame.draw.rect(screen, white, [box2_x + 1, box2_y + 1, box_length - 2, box_height - 2])
+        button = [Option("Return", (box1_x + 100, box1_y - 3), screen),
+                     Option("Exit", (box2_x + 120, box2_y - 3), screen)]
+
 class TitlePage:
     ### Title part ###
     def __init__(self,title1):
