@@ -406,6 +406,8 @@ def main():
             clock.tick(60)
 
 while 1:
+    ui_width, ui_height = 600, 600
+    screen = pygame.display.set_mode((ui_width, ui_height))
     flip = False
     passPawn = None
     check = None
