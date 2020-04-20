@@ -11,7 +11,7 @@ pygame.init()
 
 black, white = (0, 0, 0), (255, 255, 255)
 
-ui_width, ui_height = 1000, 600
+ui_width, ui_height = 600, 600
 
 screen = pygame.display.set_mode((ui_width, ui_height))
 screen = pygame.display.get_surface()
@@ -417,6 +417,8 @@ while 1:
     currentAlliance = "W"
     title = TitlePage("ChessA")
     mode = title.ModeSelect(screen,clock)
+    ui_width, ui_height = 1000, 600
+    screen = pygame.display.set_mode((ui_width, ui_height))
     startGame(mode)
     gO = False
     main()
