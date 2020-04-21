@@ -60,7 +60,29 @@ def display_message(msg):
     yText += 16
     screen.blit(text, textRect)
     pygame.display.update()  
-      
+
+def display_gOmessage(msg):
+    global flip
+    font = pygame.font.Font("C:\Windows\Fonts\Ebrima.ttf", 16) 
+    text = font.render(msg, True, (0, 0, 0)) 
+
+    textRect = text.get_rect()  
+    textRect.center = (ui_width // 2, ui_height // 2)
+    screen.fill(white) 
+    screen.blit(text, textRect)
+
+    a= True
+
+    while a :  
+
+        for event in pygame.event.get() : 
+
+            if event.type == pygame.QUIT: 
+                a = False
+                drawBoard()
+                drawPieces(flip)
+        pygame.display.update()
+    time.sleep(10)
 
 def square(x_coord, y_coord, width, height, color):
     pygame.draw.rect(screen, color, [x_coord, y_coord, width, height])
@@ -88,7 +110,7 @@ def drawBoard():
 
 def castleRook(prevY, newY, selectedPiece):       
     print("move rook")
-    print("toString after call", selectedPiece.toString())
+    # print("toString after call", selectedPiece.toString())
     # **old and new positions:
     # Lf bR = (0,0) => (0, 3)
     # Rt bR = (0,7) => (0, 5)
@@ -102,16 +124,20 @@ def castleRook(prevY, newY, selectedPiece):
         if (selectedPiece.alliance == "B"):
             if (newY == prevY + 2): # black right
                 chessBoard.updateBoard(0, 5, chessBoard.board[0][7].pieceOccupy)
+                chessBoard.board[0][5].pieceOccupy.y_coord = 5
                 chessBoard.updateBoard(0, 7, nullPiece())
             elif (newY == prevY - 2): # black left
                 chessBoard.updateBoard(0, 3, chessBoard.board[0][0].pieceOccupy)
+                chessBoard.board[0][3].pieceOccupy.y_coord = 3
                 chessBoard.updateBoard(0, 0, nullPiece())
         else:
             if (newY == prevY + 2): # white right
                 chessBoard.updateBoard(7, 5, chessBoard.board[7][7].pieceOccupy)
+                chessBoard.board[7][5].pieceOccupy.y_coord = 5
                 chessBoard.updateBoard(7, 7, nullPiece())
             elif (newY == prevY - 2): # white left
                 chessBoard.updateBoard(7, 3, chessBoard.board[7][0].pieceOccupy)
+                chessBoard.board[7][3].pieceOccupy.y_coord = 3
                 chessBoard.updateBoard(7, 0, nullPiece())
 
 
@@ -181,7 +207,7 @@ def switchSide():
     global count
     global gO
     if moves[currentAlliance] == 50:
-        display_message("50 Shade of Stale")
+        display_gOmessage("50 Shade of Stale")
         gO = True
     #The check condition#
     check = Check(chessBoard.board,currentAlliance)
@@ -209,13 +235,13 @@ def switchSide():
     drawPieces(flip)
     stalemate.alliance = currentAlliance
     if stalemate.staleCase2():
-        display_message("Stalemate")
+        display_gOmessage("Stalemate")
         gO = True
     if selectedPiece.toString() == "P" and selectedPiece.passP is True:
         passPawn = selectedPiece
     if count == 4:
         if stalemate.repetitionCheck():
-            display_message("Stalemate")
+            display_gOmessage("Stalemate")
             gO = True
         count = 0
 
@@ -265,7 +291,7 @@ def main():
                 moves[currentAlliance] = 0
             if selectedPiece is None:
                 gO = True
-                display_message("Game Over, Bot lose")
+                display_gOmessage("Game Over, Bot lose")
                 break
             print(moves)
             switchSide()
@@ -305,15 +331,6 @@ def main():
                             print(selectedPiece, "at coordination: [", bRows, ", ", bCols, "]")
 
                             ck = Castling(chessBoard, selectedPiece.validMove, selectedPiece)
-
-                            if ck.canCastle() and selectedPiece.toString == "K":
-                                if (selectedPiece.alliance == "B"):
-                                    pieceMove.append([0, 6])
-                                    pieceMove.append([0, 2])
-                                else:
-                                    print(pieceMove)
-                                    pieceMove.append([7, 6])
-                                    pieceMove.append([7, 2])
                             
                             if(checked == True):
                                 kingMove = check.isCheckMate()
@@ -327,11 +344,11 @@ def main():
                                 else:
                                     if(kingMove == []):
                                         if(currentAlliance == "W"):
-                                            display_message("White Is in checkMate, Black Wins")
-                                            gO = True 
+                                            display_gOmessage("White Is in checkMate, Black Wins")
+                                            gO = True
                                         else:
-                                            display_message("Black Is in checkMate, White Wins")
-                                            gO = True 
+                                            display_gOmessage("Black Is in checkMate, White Wins")
+                                            gO = True
                                     if(selectedPiece.toString() != 'K'):
                                         display_message("King must be moved")
                                         pieceMove = []
@@ -339,13 +356,21 @@ def main():
                                         pieceMove = check.isCheckMate()
                             else:
                                 pieceMove = selectedPiece.validMove(chessBoard.board)
-                                if(ck.canCastle() and selectedPiece.toString() == "K"):
+                                if(selectedPiece.toString() == "K"):
                                     if (selectedPiece.alliance == "B"):
-                                        pieceMove.append([0, 6])
-                                        pieceMove.append([0, 2])
+                                        if ck.canCastleR():
+                                            print("castle bR")
+                                            pieceMove.append([0, 6])
+                                        if ck.canCastleL():
+                                            print("castle bL")
+                                            pieceMove.append([0, 2])
                                     else:
-                                        pieceMove.append([7, 6])
-                                        pieceMove.append([7, 2])
+                                        if ck.canCastleR():
+                                            print("castle wL")
+                                            pieceMove.append([7, 6])
+                                        if ck.canCastleL():
+                                            print("castle wR")
+                                            pieceMove.append([7, 2])
                             print("validMoves:", pieceMove)
                             drawBoard()
                             drawPieces(flip)
